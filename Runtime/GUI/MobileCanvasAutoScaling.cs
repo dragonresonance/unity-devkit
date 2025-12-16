@@ -1,3 +1,8 @@
+#if UNITY_ANDROID || UNITY_IOS || UNITY_SWITCH || UNITY_TVOS
+	#define UNITY_MOBILE
+#endif
+
+
 using DragonResonance.Behaviours;
 using UnityEngine.UI;
 using UnityEngine;
@@ -18,7 +23,7 @@ namespace DragonResonance.GUI
 			float dpi = ((Screen.dpi != 0) ? Screen.dpi : _dpiFallback);
 			float scale = dpi / 72f;	// The DTP point is defined as 1⁄72 of an inch (or exactly 0.352777 mm)
 
-			#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+			#if UNITY_MOBILE && !UNITY_EDITOR
 				canvasScaler.scaleFactor = scale * _configuration.MobilePanelScaleFactor;
 			#else
 				canvasScaler.scaleFactor = scale;

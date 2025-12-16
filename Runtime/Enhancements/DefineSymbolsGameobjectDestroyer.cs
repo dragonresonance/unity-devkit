@@ -130,6 +130,12 @@ namespace DragonResonance.Enhancements
 				#if UNITY_IOS
 					_definedDefinitions.Add("UNITY_IOS");
 				#endif
+				#if UNITY_PS4
+					_definedDefinitions.Add("UNITY_PS4");
+				#endif
+				#if UNITY_PS5
+					_definedDefinitions.Add("UNITY_PS5");
+				#endif
 				#if UNITY_QNX
 					_definedDefinitions.Add("UNITY_QNX");
 				#endif
@@ -148,6 +154,9 @@ namespace DragonResonance.Enhancements
 				#if UNITY_STANDALONE_WIN
 					_definedDefinitions.Add("UNITY_STANDALONE_WIN");
 				#endif
+				#if UNITY_SWITCH
+					_definedDefinitions.Add("UNITY_SWITCH");
+				#endif
 				#if UNITY_TVOS
 					_definedDefinitions.Add("UNITY_TVOS");
 				#endif
@@ -162,6 +171,12 @@ namespace DragonResonance.Enhancements
 				#endif
 				#if UNITY_WSA_10_0
 					_definedDefinitions.Add("UNITY_WSA_10_0");
+				#endif
+				#if UNITY_XBOXONE
+					_definedDefinitions.Add("UNITY_XBOXONE");
+				#endif
+				#if UNITY_XBOXSERIES
+					_definedDefinitions.Add("UNITY_XBOXSERIES");
 				#endif
 			}
 

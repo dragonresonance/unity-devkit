@@ -14,29 +14,42 @@ namespace DragonResonance.Behaviours
 		#endif
 
 
-		protected T GetComponentIfNull<T>(Component statement) where T : Component =>
-			((statement == null) ? GetComponent<T>() : (T)statement);
-		protected T GetComponentInChildrenIfNull<T>(Component statement) where T : Component =>
-			((statement == null) ? GetComponentInChildren<T>() : (T)statement);
-		protected T GetComponentInParentIfNull<T>(Component statement) where T : Component =>
-			((statement == null) ? GetComponentInParent<T>() : (T)statement);
+		#region Privates
 
-		protected T FindComponentIfNull<T>(Component statement) where T : Component =>
-			FindComponentIfNull<T>(statement, true);
-		protected T FindComponentIfNull<T>(Component statement, bool includeInactive) where T : Component =>
-			FindComponentIfNull<T>(statement, (includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude));
-		protected T FindComponentIfNull<T>(Component statement, FindObjectsInactive includeInactive) where T : Component =>
-			((statement == null) ? FindAnyObjectByType<T>(includeInactive) : (T)statement);
+			protected T GetComponentIfNull<T>(Component statement) where T : Component =>
+				((statement == null) ? GetComponent<T>() : (T)statement);
+			protected T GetComponentInChildrenIfNull<T>(Component statement) where T : Component =>
+				((statement == null) ? GetComponentInChildren<T>() : (T)statement);
+			protected T GetComponentInParentIfNull<T>(Component statement) where T : Component =>
+				((statement == null) ? GetComponentInParent<T>() : (T)statement);
+
+			protected T FindComponentIfNull<T>(Component statement) where T : Component =>
+				FindComponentIfNull<T>(statement, true);
+			protected T FindComponentIfNull<T>(Component statement, bool includeInactive) where T : Component =>
+				FindComponentIfNull<T>(statement, (includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude));
+			protected T FindComponentIfNull<T>(Component statement, FindObjectsInactive includeInactive) where T : Component =>
+				((statement == null) ? FindAnyObjectByType<T>(includeInactive) : (T)statement);
+
+		#endregion
+
+
+		#region Properties
+
+			public RectTransform rectTransform => (RectTransform)base.transform;
+
+		#endregion
 
 
 		#if UNITY_EDITOR
-		protected static T FindFirstAssetIfNull<T>(UnityObject statement) where T : UnityObject
-		{
-			if (statement != null) return (T)statement;
-			string[] guids = UnityEditor.AssetDatabase.FindAssets("t:" + typeof(T).Name);
-			if (guids.Length == 0) return null;
-			return UnityEditor.AssetDatabase.LoadAssetAtPath<T>(UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]));
-		}
+
+			protected static T FindFirstAssetIfNull<T>(UnityObject statement) where T : UnityObject
+			{
+				if (statement != null) return (T)statement;
+				string[] guids = UnityEditor.AssetDatabase.FindAssets("t:" + typeof(T).Name);
+				if (guids.Length == 0) return null;
+				return UnityEditor.AssetDatabase.LoadAssetAtPath<T>(UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]));
+			}
+
 		#endif
 	}
 }
