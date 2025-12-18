@@ -14,17 +14,22 @@ namespace DragonResonance.GUI
 	[RequireComponent(typeof(CanvasScaler))]
 	public class MobileCanvasAutoScaling : PossumBehaviour
 	{
+		#pragma warning disable 0414
+		// ReSharper disable once NotAccessedField.Local
 		[SerializeField] private float _dpiFallback = 96f;	// 96 is the Unity's default value
+		// ReSharper disable once NotAccessedField.Local
+		[SerializeField] private float _mobilePanelScaleFactor = 0.5f;
+		#pragma warning restore 0414
 
 
-		private void Start()
+		private void Awake()
 		{
 			CanvasScaler canvasScaler = GetComponent<CanvasScaler>();
 			float dpi = ((Screen.dpi != 0) ? Screen.dpi : _dpiFallback);
 			float scale = dpi / 72f;	// The DTP point is defined as 1⁄72 of an inch (or exactly 0.352777 mm)
 
 			#if UNITY_MOBILE && !UNITY_EDITOR
-				canvasScaler.scaleFactor = scale * _configuration.MobilePanelScaleFactor;
+				canvasScaler.scaleFactor = scale * _mobilePanelScaleFactor;
 			#else
 				canvasScaler.scaleFactor = scale;
 			#endif
