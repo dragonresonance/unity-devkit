@@ -16,19 +16,19 @@ namespace DragonResonance.Behaviours
 
 		#region Privates
 
-			protected T GetComponentIfNull<T>(Component statement) where T : Component =>
-				((statement == null) ? GetComponent<T>() : (T)statement);
-			protected T GetComponentInChildrenIfNull<T>(Component statement) where T : Component =>
-				((statement == null) ? GetComponentInChildren<T>() : (T)statement);
-			protected T GetComponentInParentIfNull<T>(Component statement) where T : Component =>
-				((statement == null) ? GetComponentInParent<T>() : (T)statement);
+			protected T GetComponentIfNull<T>(T statement) where T : Component =>
+				((statement == null) ? GetComponent<T>() : statement);
+			protected T GetComponentInChildrenIfNull<T>(T statement) where T : Component =>
+				((statement == null) ? GetComponentInChildren<T>() : statement);
+			protected T GetComponentInParentIfNull<T>(T statement) where T : Component =>
+				((statement == null) ? GetComponentInParent<T>() : statement);
 
-			protected T FindComponentIfNull<T>(Component statement) where T : Component =>
-				FindComponentIfNull<T>(statement, true);
-			protected T FindComponentIfNull<T>(Component statement, bool includeInactive) where T : Component =>
-				FindComponentIfNull<T>(statement, (includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude));
-			protected T FindComponentIfNull<T>(Component statement, FindObjectsInactive includeInactive) where T : Component =>
-				((statement == null) ? FindAnyObjectByType<T>(includeInactive) : (T)statement);
+			protected T FindComponentIfNull<T>(T statement) where T : Component =>
+				FindComponentIfNull(statement, true);
+			protected T FindComponentIfNull<T>(T statement, bool includeInactive) where T : Component =>
+				FindComponentIfNull(statement, (includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude));
+			protected T FindComponentIfNull<T>(T statement, FindObjectsInactive includeInactive) where T : Component =>
+				((statement == null) ? FindAnyObjectByType<T>(includeInactive) : statement);
 
 		#endregion
 
