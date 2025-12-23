@@ -8,18 +8,18 @@
 - Open the **Unity Package Manager**.
 - Click the dropdown **+** button and select *Add package from git URL...*.
 - Add one of the following mirrors:
-  - GitHub: [```https://github.com/dragonresonance/unity-devkit-package.git#master```](https://github.com/dragonresonance/unity-devkit-package.git#master)
-  - GitLab: [```https://gitlab.com/dragonresonance/unity-devkit-package.git#master```](https://gitlab.com/dragonresonance/unity-devkit-package.git#master)
+  - GitHub: [```https://github.com/dragonresonance/unity-devkit.git#master```](https://github.com/dragonresonance/unity-devkit.git#master)
+  - GitLab: [```https://gitlab.com/dragonresonance/unity-devkit.git#master```](https://gitlab.com/dragonresonance/unity-devkit.git#master)
 
 
 ## Dependencies
 
-- SimpleJSON: [```https://github.com/davidtabernerom/SimpleJSON.git#master```](https://github.com/davidtabernerom/SimpleJSON.git#master)
+- SimpleJSON: [```https://github.com/davidtabernerom/unity-simplejson.git#master```](https://github.com/davidtabernerom/unity-simplejson.git#master)
 
 
 ## Issues
 
-Please use the [GitHub Issues](https://github.com/dragonresonance/unity-devkit-package/issues) dedicated site.
+Please use the [GitHub Issues](https://github.com/dragonresonance/unity-devkit/issues) dedicated site.
 
 
 ## License
