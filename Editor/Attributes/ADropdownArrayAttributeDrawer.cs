@@ -22,10 +22,15 @@ namespace DragonResonance.Editor.Attributes
 				return;
 			}
 
-			int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
-			int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
-			if (selectedIndex != currentIndex)
-				property.stringValue = items[selectedIndex];
+			EditorGUI.BeginProperty(position, label, property);
+			{
+				EditorGUI.BeginChangeCheck();
+				int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
+				int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
+				if (EditorGUI.EndChangeCheck())
+					property.stringValue = items[selectedIndex];
+			}
+			EditorGUI.EndProperty();
 		}
 	}
 }

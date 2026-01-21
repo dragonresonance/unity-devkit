@@ -32,7 +32,7 @@ namespace DragonResonance.Editor.Attributes
 			if (animator == null || animator.runtimeAnimatorController == null)
 				return Array.Empty<string>();
 
-			return animator.parameters.Select(parameter => parameter.name).ToArray();
+			return animator.parameters.Select(parameter => parameter.name).Prepend(string.Empty).ToArray();
 		}
 	}
 }
