@@ -1,31 +1,38 @@
 ﻿#if UNITY_EDITOR
 
 
-using DragonResonance.Extensions;
+using DragonResonance.Attributes;
+using System.Linq;
+using System.Reflection;
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 
 namespace DragonResonance.Editor.Attributes
 {
-	public class ADropdownArrayAttributeDrawer : PropertyDrawer
+	[CustomPropertyDrawer(typeof(AnimatorParameterAttribute))]
+	public class AnimatorParameterAttributeDrawer : ADropdownArrayAttributeDrawer
 	{
-		protected virtual string[] GetItems(SerializedProperty property) => Array.Empty<string>();	// The method to override and retrieve the items
-
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		protected override string[] GetItems(SerializedProperty property)
 		{
-			string[] items = GetItems(property);
+			AnimatorParameterAttribute animatorParameterAttribute = (AnimatorParameterAttribute)base.attribute;
+			if (animatorParameterAttribute == null)
+				return Array.Empty<string>();
 
-			if (items.Length.IsZero()) {
-				EditorGUI.HelpBox(position, $"{this.GetType().Name} has zero items", MessageType.Warning);
-				return;
-			}
+			UnityObject targetParameterObject = property.serializedObject.targetObject;
+			FieldInfo animatorField = targetParameterObject.GetType().GetField(
+				animatorParameterAttribute.AnimatorFieldName,
+				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			if (animatorField == null)
+				return Array.Empty<string>();
 
-			int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
-			int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
-			if (selectedIndex != currentIndex)
-				property.stringValue = items[selectedIndex];
+			Animator animator = (Animator)animatorField.GetValue(targetParameterObject);
+			if (animator == null || animator.runtimeAnimatorController == null)
+				return Array.Empty<string>();
+
+			return animator.parameters.Select(parameter => parameter.name).ToArray();
 		}
 	}
 }

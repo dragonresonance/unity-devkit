@@ -1,37 +1,20 @@
-﻿#if UNITY_EDITOR
+﻿using UnityEngine;
 
 
-using DragonResonance.Extensions;
-using System;
-using UnityEditor;
-using UnityEngine;
-
-
-namespace DragonResonance.Editor.Attributes
+namespace DragonResonance.Attributes
 {
-	public class ADropdownArrayAttributeDrawer : PropertyDrawer
+	public class AnimatorParameterAttribute : PropertyAttribute
 	{
-		protected virtual string[] GetItems(SerializedProperty property) => Array.Empty<string>();	// The method to override and retrieve the items
+		private readonly string _animatorFieldName;
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		public AnimatorParameterAttribute(string animatorFieldName)
 		{
-			string[] items = GetItems(property);
-
-			if (items.Length.IsZero()) {
-				EditorGUI.HelpBox(position, $"{this.GetType().Name} has zero items", MessageType.Warning);
-				return;
-			}
-
-			int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
-			int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
-			if (selectedIndex != currentIndex)
-				property.stringValue = items[selectedIndex];
+			_animatorFieldName = animatorFieldName;
 		}
+
+		public string AnimatorFieldName => _animatorFieldName;
 	}
 }
-
-
-#endif
 
 
 /*       ________________________________________________________________       */
