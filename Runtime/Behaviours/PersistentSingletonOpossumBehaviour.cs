@@ -8,9 +8,9 @@ namespace DragonResonance.Behaviours
 {
 	public abstract class PersistentSingletonOpossumBehaviour<T> : SingletonOpossumBehaviour<T> where T : Component
 	{
-		#region Privates
+		#region Inheritables
 
-			protected new void AssessInstance()
+			protected override void AssessInstance()
 			{
 				if (_instance == null) {
 					_instance = this as T;

@@ -5,19 +5,14 @@ using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 
-
-
 namespace DragonResonance.Behaviours
 {
-	public abstract partial class PossumBehaviour // Logging
+	public abstract partial class PossumBehaviour	// Logging
 	{
 		[SerializeField] private ELogLevel _loggingMask = ELogLevel.Info | ELogLevel.Emphasis | ELogLevel.Warning | ELogLevel.Error | ELogLevel.Exception;
 
 
-
-
-		#region Publics
-
+		#region Inheritables
 
 			protected bool Log(string message = "", [CallerMemberName] string callerMember = null)
 			{
@@ -25,7 +20,6 @@ namespace DragonResonance.Behaviours
 				HLogger.Log(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
-
 
 			protected bool Info(string message = "", [CallerMemberName] string callerMember = null) => LogInfo(message, callerMember);
 			protected bool LogInfo(string message = "", [CallerMemberName] string callerMember = null)
@@ -35,7 +29,6 @@ namespace DragonResonance.Behaviours
 				return true;
 			}
 
-
 			protected bool Emphasis(string message = "", [CallerMemberName] string callerMember = null) => LogEmphasis(message, callerMember);
 			protected bool LogEmphasis(string message = "", [CallerMemberName] string callerMember = null)
 			{
@@ -43,7 +36,6 @@ namespace DragonResonance.Behaviours
 				HLogger.LogEmphasis(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
-
 
 			protected bool Warning(string message = "", [CallerMemberName] string callerMember = null) => LogWarning(message, callerMember);
 			protected bool LogWarning(string message = "", [CallerMemberName] string callerMember = null)
@@ -53,7 +45,6 @@ namespace DragonResonance.Behaviours
 				return true;
 			}
 
-
 			protected bool Error(string message = "", [CallerMemberName] string callerMember = null) => LogError(message, callerMember);
 			protected bool LogError(string message = "", [CallerMemberName] string callerMember = null)
 			{
@@ -61,7 +52,6 @@ namespace DragonResonance.Behaviours
 				HLogger.LogError(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
-
 
 			protected bool Exception(Exception exception, [CallerMemberName] string callerMember = null) => LogException(exception, callerMember);
 			protected bool LogException(Exception exception, [CallerMemberName] string callerMember = null)
@@ -71,23 +61,16 @@ namespace DragonResonance.Behaviours
 				return true;
 			}
 
-
 		#endregion
-
-
 
 
 		#region Properties
 
-
 			protected ELogLevel LoggingMask => _loggingMask;
-
 
 		#endregion
 	}
 }
-
-
 
 
 /*       ________________________________________________________________       */

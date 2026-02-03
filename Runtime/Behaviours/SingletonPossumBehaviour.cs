@@ -33,11 +33,11 @@ namespace DragonResonance.Behaviours
 		#endregion
 
 
-		#region Privates
+		#region Inheritables
 
-			protected void InvokeInstantiationEvent() => OnInstanced?.Invoke();
+			protected virtual void InvokeInstantiationEvent() => OnInstanced?.Invoke();
 
-			protected void AssessInstance()
+			protected virtual void AssessInstance()
 			{
 				if (_instance == null) {
 					_instance = this as T;
@@ -54,6 +54,8 @@ namespace DragonResonance.Behaviours
 		#region Properties
 
 			public static T CachedInstance => _instance;
+			public static T Instance => GetInstance();
+			public static T Current => GetInstance();
 
 		#endregion
 	}
