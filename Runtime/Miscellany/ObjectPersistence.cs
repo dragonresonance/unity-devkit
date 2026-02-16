@@ -1,13 +1,52 @@
+using DragonResonance.Attributes;
+using DragonResonance.Behaviours;
+using DragonResonance.Extensions;
+using System.Collections.Generic;
 using System;
 using UnityEngine;
 
 
-namespace DragonResonance.Enhancements
+namespace DragonResonance.Miscellany
 {
-	public class RuntimeGameobjectDisabler : RuntimeGameobjectDestroyer
+	[DisallowMultipleComponent]
+	[RequireComponent(typeof(Transform))]
+	public class ObjectPersistence : PossumBehaviour
 	{
-		[SerializeField] private bool _enableInstead = false;
-		protected override Action<GameObject> PerformingAction => (gameobject) => gameobject.SetActive(_enableInstead);
+		[SerializeField] private bool _makeGameobjectUnique = true;
+		[ShowIf(nameof(_makeGameobjectUnique))] [SerializeField] private string _guid = "";
+
+
+		private static readonly HashSet<string> _guids = new();
+
+
+		#region Events
+
+			private void OnValidate()
+			{
+				_guid = _guid.Trim();
+				if (string.IsNullOrEmpty(_guid)) _guid = Guid.NewGuid().ToString().ToUpperInvariant();
+			}
+
+			private void Awake()
+			{
+				if (_makeGameobjectUnique && _guids.Contains(_guid)) {
+					//Log($"Destroying this object with GUID {_guid} ...");
+					DestroyImmediate(this.gameObject);
+				}
+				else {
+					//Log($"Persisting this object with GUID {_guid} ...");
+					DontDestroyOnLoad(this.gameObject);
+					_guids.Add(_guid);
+				}
+			}
+
+			private void OnDestroy()
+			{
+				if (this.gameObject.IsPersistent())
+					_guids.Remove(_guid);
+			}
+
+		#endregion
 	}
 }
 

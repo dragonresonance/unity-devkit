@@ -2,18 +2,12 @@ using System;
 using UnityEngine;
 
 
-namespace DragonResonance.Enhancements
+namespace DragonResonance.Miscellany
 {
-	public class DefineSymbolsGameobjectDisabler : DefineSymbolsGameobjectDestroyer
+	public class RuntimeGameobjectDisabler : RuntimeGameobjectDestroyer
 	{
 		[SerializeField] private bool _enableInstead = false;
-
-
-		#region Privates
-
-			protected override Action<GameObject> PerformingAction => (gameobject) => gameobject.SetActive(_enableInstead);
-
-		#endregion
+		protected override Action<GameObject> PerformingAction => (gameobject) => gameobject.SetActive(_enableInstead);
 	}
 }
 

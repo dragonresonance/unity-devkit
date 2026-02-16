@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 
 
-namespace DragonResonance.Enhancements
+namespace DragonResonance.Miscellany
 {
 	public class DefineSymbolsGameobjectDestroyer : PossumBehaviour
 	{
