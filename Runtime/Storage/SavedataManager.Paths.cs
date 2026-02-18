@@ -1,23 +1,30 @@
-using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
+using UnityEngine;
 
 
-namespace DragonResonance.Extensions
+namespace DragonResonance.Storage
 {
-	public static class IDictionaryExtensions
+	public partial class SavedataManager
 	{
-		public static void AddOrSet<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
-		{
-			if (!dictionary.ContainsKey(key))
-				dictionary.Add(key, value);
-			else
-				dictionary[key] = value;
-		}
 
-		public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> target, IDictionary<TKey, TValue> source)
-		{
-			foreach (KeyValuePair<TKey, TValue> kvp in source)
-				target.Add(kvp.Key, kvp.Value);
-		}
+		#region Publics
+
+			public string GetOptimizedPersistentDataPath() => GetOptimizedPersistentDataPath(".");
+			public string GetOptimizedPersistentDataPath(string path) => GetOptimizedPersistentDataPath(".", path);
+			public string GetOptimizedPersistentDataPath(string path, string filename)
+			{
+				string optimizedPersistentDataPath = Application.persistentDataPath;
+
+				#if UNITY_STANDALONE_WIN
+					optimizedPersistentDataPath =
+						Regex.Replace(optimizedPersistentDataPath, @"\bLocalLow\b", "Roaming", RegexOptions.IgnoreCase);
+				#endif
+
+				return Path.GetFullPath(Path.Combine(optimizedPersistentDataPath, path, filename));
+			}
+
+		#endregion
 	}
 }
 

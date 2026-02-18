@@ -1,27 +1,50 @@
+﻿#if UNITY_EDITOR
+
+
+using DragonResonance.Attributes;
 using System.Collections.Generic;
+using System.Linq;
+using System;
+using UnityEditor;
+using UnityEngine;
 
 
-namespace DragonResonance.Extensions
+namespace DragonResonance.Editor.Attributes
 {
-	public static class IDictionaryExtensions
+	[CustomPropertyDrawer(typeof(TypeFilterAttribute))]
+	public class TypeFilterDrawer : PropertyDrawer
 	{
-		public static void AddOrSet<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
-		{
-			if (!dictionary.ContainsKey(key))
-				dictionary.Add(key, value);
-			else
-				dictionary[key] = value;
-		}
+		private List<Type> _types;
 
-		public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> target, IDictionary<TKey, TValue> source)
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			foreach (KeyValuePair<TKey, TValue> kvp in source)
-				target.Add(kvp.Key, kvp.Value);
+			if (_types == null) {
+				TypeFilterAttribute filter = (TypeFilterAttribute)attribute;
+				_types = AppDomain.CurrentDomain.GetAssemblies()
+					.SelectMany(assembly => assembly.GetTypes())
+					.Where(type => filter.BaseType.IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
+					.ToList();
+			}
+
+			EditorGUI.BeginProperty(position, label, property);
+			{
+				EditorGUI.BeginChangeCheck();
+				string[] typeNames = _types.Select(t => t.Name).ToArray();
+				int currentIndex = Mathf.Max(0, _types.FindIndex(type => type.AssemblyQualifiedName == property.stringValue));
+				int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, typeNames);
+				if (EditorGUI.EndChangeCheck())
+					property.stringValue = _types[selectedIndex].AssemblyQualifiedName;
+			}
+			EditorGUI.EndProperty();
 		}
 	}
 }
 
 
+#endif
+
+
+/*                                                                              */
 /*       ________________________________________________________________       */
 /*           _________   _______ ________  _______  _______  ___    _           */
 /*           |        \ |______/ |______| |  _____ |       | |  \   |           */

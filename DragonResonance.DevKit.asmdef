@@ -2,7 +2,7 @@
     "name": "DragonResonance.DevKit",
     "rootNamespace": "DragonResonance",
     "references": [
-        "Bunny83.SimpleJSON",
+        "Tabernero.SimpleJSON",
         "Unity.InputSystem",
         "Unity.Netcode.Runtime"
     ],
@@ -14,6 +14,11 @@
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [
+        {
+            "name": "dev.tabernero.simplejson",
+            "expression": "",
+            "define": "SIMPLEJSON"
+        },
         {
             "name": "com.unity.render-pipelines.universal",
             "expression": "",

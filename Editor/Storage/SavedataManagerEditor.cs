@@ -1,25 +1,53 @@
+#if UNITY_EDITOR
+
+
+using DragonResonance.Extensions;
 using System.Collections.Generic;
+using System;
+using UnityEditor;
+using UnityEngine;
+
+#if SIMPLEJSON
+	using Tabernero.SimpleJSON;
+#endif
 
 
-namespace DragonResonance.Extensions
+namespace DragonResonance.Storage
 {
-	public static class IDictionaryExtensions
+	[CustomEditor(typeof(SavedataManager))]
+	public class SavedataManagerEditor : UnityEditor.Editor
 	{
-		public static void AddOrSet<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+		public override void OnInspectorGUI()
 		{
-			if (!dictionary.ContainsKey(key))
-				dictionary.Add(key, value);
-			else
-				dictionary[key] = value;
-		}
+			base.OnInspectorGUI();
+			SavedataManager savedataManager = (SavedataManager)base.target;
 
-		public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> target, IDictionary<TKey, TValue> source)
-		{
-			foreach (KeyValuePair<TKey, TValue> kvp in source)
-				target.Add(kvp.Key, kvp.Value);
+			EditorGUILayout.Separator();
+			EditorGUILayout.LabelField("Controls", EditorStyles.boldLabel);
+			if (GUILayout.Button(nameof(SavedataManager.Load)))
+				savedataManager.Load();
+			if (GUILayout.Button(nameof(SavedataManager.Save)))
+				savedataManager.Save();
+
+			#if SIMPLEJSON
+				EditorGUILayout.Separator();
+				EditorGUILayout.LabelField("Data", EditorStyles.boldLabel);
+				if (savedataManager.Data.IsEmpty()) {
+					EditorGUILayout.LabelField($"(There is no data)", EditorStyles.centeredGreyMiniLabel);
+				}
+				else {
+					foreach (KeyValuePair<Type, string> dataKeyValuePair in savedataManager.Data) {
+						EditorGUILayout.LabelField(dataKeyValuePair.Key.Name, EditorStyles.miniLabel);
+						EditorGUILayout.TextArea(JSON.Parse(dataKeyValuePair.Value).ToString(savedataManager.CompactedJSON));
+					}
+				}
+			#endif
 		}
 	}
 }
+
+
+#endif
 
 
 /*       ________________________________________________________________       */

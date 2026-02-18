@@ -1,24 +1,6 @@
-using System.Collections.Generic;
-
-
-namespace DragonResonance.Extensions
+namespace DragonResonance.Storage
 {
-	public static class IDictionaryExtensions
-	{
-		public static void AddOrSet<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
-		{
-			if (!dictionary.ContainsKey(key))
-				dictionary.Add(key, value);
-			else
-				dictionary[key] = value;
-		}
-
-		public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> target, IDictionary<TKey, TValue> source)
-		{
-			foreach (KeyValuePair<TKey, TValue> kvp in source)
-				target.Add(kvp.Key, kvp.Value);
-		}
-	}
+	public interface ISavableData { }
 }
 
 

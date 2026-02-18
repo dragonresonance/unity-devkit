@@ -1,23 +1,20 @@
-using System.Collections.Generic;
+﻿using System;
+using UnityEngine;
 
 
-namespace DragonResonance.Extensions
+namespace DragonResonance.Attributes
 {
-	public static class IDictionaryExtensions
+	[AttributeUsage(AttributeTargets.Field)]
+	public class TypeFilterAttribute : PropertyAttribute
 	{
-		public static void AddOrSet<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+		private readonly Type _baseType;
+
+		public TypeFilterAttribute(Type baseType)
 		{
-			if (!dictionary.ContainsKey(key))
-				dictionary.Add(key, value);
-			else
-				dictionary[key] = value;
+			_baseType = baseType;
 		}
 
-		public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> target, IDictionary<TKey, TValue> source)
-		{
-			foreach (KeyValuePair<TKey, TValue> kvp in source)
-				target.Add(kvp.Key, kvp.Value);
-		}
+		public Type BaseType => _baseType;
 	}
 }
 
