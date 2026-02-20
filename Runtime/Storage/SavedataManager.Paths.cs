@@ -1,5 +1,5 @@
 using System.IO;
-using System.Text.RegularExpressions;
+using System;
 using UnityEngine;
 
 
@@ -17,8 +17,13 @@ namespace DragonResonance.Storage
 				string optimizedPersistentDataPath = Application.persistentDataPath;
 
 				#if UNITY_STANDALONE_WIN
-					optimizedPersistentDataPath =
-						Regex.Replace(optimizedPersistentDataPath, @"\bLocalLow\b", "Roaming", RegexOptions.IgnoreCase);
+					optimizedPersistentDataPath = Path.Combine(
+						Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+						Application.companyName, Application.productName);
+				#elif UNITY_STANDALONE_LINUX
+					optimizedPersistentDataPath = Path.Combine(
+						Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+						Application.companyName, Application.productName);
 				#endif
 
 				return Path.GetFullPath(Path.Combine(optimizedPersistentDataPath, path, filename));

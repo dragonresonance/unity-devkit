@@ -5,31 +5,25 @@ namespace DragonResonance.Mathematics
 {
 	public static class MathX
 	{
-		#region Operations
+		#region Publics - Operations
 
 			public static int TimesDivisible(int dividend, int divisor) => (((dividend / divisor != 0) && (dividend % divisor == 0)) ? (TimesDivisible((dividend / divisor), divisor) + 1) : 0);
 
 		#endregion
 
 
-		#region Performance
+		#region Publics - Performance
 
 			public static float Framerate(int frames, float time) => (frames / time);
-
-		#endregion
-
-
-		#region Audio
-
-			public static float LinearToMixerAudioVolume(float linearValue) => (Mathf.Log10(Mathf.Clamp(linearValue, 0.0001f, 10f)) * 20f);
-			public static float MixerToLinearAudioVolume(float mixerValue) => Mathf.Pow(10f, (Mathf.Clamp(mixerValue, -80f, 20f) / 20f));
-
-		#endregion
-
-
-		#region Audio
-
 			public static float SceneLoadPercentage(AsyncOperation sceneLoadOperation) => Mathf.Clamp01(sceneLoadOperation.progress / 0.9f);
+
+		#endregion
+
+
+		#region Publics - Audio
+
+			public static float Linear2DbAudioVolume(float percentage) => (Mathf.Log10(Mathf.Clamp(percentage, 0.0001f, 10f)) * 20f);
+			public static float Db2LinearAudioVolume(float decibels) => Mathf.Pow(10f, (Mathf.Clamp(decibels, -80f, 20f) / 20f));
 
 		#endregion
 

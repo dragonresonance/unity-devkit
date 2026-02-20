@@ -7,8 +7,8 @@ namespace DragonResonance.Storage
 	[Serializable]
 	public struct SSavableOverride
 	{
-		public string filename;
-		[TypeFilter(typeof(ISavableData))] public string[] types;
+		public string FilePath;
+		[TypeFilter(typeof(ISavableData))] public string[] Types;
 	}
 }
 

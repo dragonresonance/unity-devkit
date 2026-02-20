@@ -24,22 +24,23 @@ namespace DragonResonance.Storage
 
 			EditorGUILayout.Separator();
 			EditorGUILayout.LabelField("Controls", EditorStyles.boldLabel);
+			if (GUILayout.Button("Open Directory"))
+				EditorUtility.RevealInFinder(savedataManager.OptimizedPersistentDataPath);
 			if (GUILayout.Button(nameof(SavedataManager.Load)))
 				savedataManager.Load();
 			if (GUILayout.Button(nameof(SavedataManager.Save)))
 				savedataManager.Save();
+			if (GUILayout.Button("Save and Reload"))
+				savedataManager.SaveReload();
 
+			EditorGUILayout.Separator();
+			EditorGUILayout.LabelField("Data", EditorStyles.boldLabel);
+			EditorGUILayout.LabelField("Optimized Persistent Data Path", EditorStyles.miniLabel);
+			EditorGUILayout.TextArea(savedataManager.OptimizedPersistentDataPath);
 			#if SIMPLEJSON
-				EditorGUILayout.Separator();
-				EditorGUILayout.LabelField("Data", EditorStyles.boldLabel);
-				if (savedataManager.Data.IsEmpty()) {
-					EditorGUILayout.LabelField($"(There is no data)", EditorStyles.centeredGreyMiniLabel);
-				}
-				else {
-					foreach (KeyValuePair<Type, string> dataKeyValuePair in savedataManager.Data) {
-						EditorGUILayout.LabelField(dataKeyValuePair.Key.Name, EditorStyles.miniLabel);
-						EditorGUILayout.TextArea(JSON.Parse(dataKeyValuePair.Value).ToString(savedataManager.CompactedJSON));
-					}
+				foreach (KeyValuePair<Type, string> dataKeyValuePair in savedataManager.Data) {
+					EditorGUILayout.LabelField(dataKeyValuePair.Key.Name, EditorStyles.miniLabel);
+					EditorGUILayout.TextArea(JSON.Parse(dataKeyValuePair.Value).ToString(savedataManager.UseCompactData));
 				}
 			#endif
 		}

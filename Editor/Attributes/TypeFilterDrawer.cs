@@ -6,36 +6,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using UnityEditor;
-using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 
 namespace DragonResonance.Editor.Attributes
 {
+	[InitializeOnLoad]
 	[CustomPropertyDrawer(typeof(TypeFilterAttribute))]
-	public class TypeFilterDrawer : PropertyDrawer
+	public class TypeFilterDrawer : ADropdownArrayAttributeDrawer
 	{
-		private List<Type> _types;
+		private static List<Type> _types;
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		static TypeFilterDrawer()
 		{
-			if (_types == null) {
-				TypeFilterAttribute filter = (TypeFilterAttribute)attribute;
-				_types = AppDomain.CurrentDomain.GetAssemblies()
-					.SelectMany(assembly => assembly.GetTypes())
-					.Where(type => filter.BaseType.IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
-					.ToList();
-			}
+			AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
+		}
 
-			EditorGUI.BeginProperty(position, label, property);
-			{
-				EditorGUI.BeginChangeCheck();
-				string[] typeNames = _types.Select(t => t.Name).ToArray();
-				int currentIndex = Mathf.Max(0, _types.FindIndex(type => type.AssemblyQualifiedName == property.stringValue));
-				int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, typeNames);
-				if (EditorGUI.EndChangeCheck())
-					property.stringValue = _types[selectedIndex].AssemblyQualifiedName;
-			}
-			EditorGUI.EndProperty();
+		static void OnAfterAssemblyReload()
+		{
+			_types = AppDomain.CurrentDomain.GetAssemblies()
+				.SelectMany(assembly => assembly.GetTypes())
+				.Where(type => !type.IsAbstract && !type.IsInterface)
+				.ToList();
+		}
+
+		protected override string[] GetItems(SerializedProperty property)
+		{
+			TypeFilterAttribute typeFilterAttribute = (TypeFilterAttribute)base.attribute;
+			if (typeFilterAttribute == null)
+				return Array.Empty<string>();
+
+			return _types
+				.Where(type => typeFilterAttribute.BaseType.IsAssignableFrom(type))
+				.Select(type => type.AssemblyQualifiedName)
+				.Prepend(string.Empty)
+				.ToArray();
 		}
 	}
 }
