@@ -22,7 +22,11 @@ namespace DragonResonance.Storage
 						Application.companyName, Application.productName);
 				#elif UNITY_STANDALONE_LINUX
 					optimizedPersistentDataPath = Path.Combine(
-						Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+						Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+						Application.companyName, Application.productName);
+				#elif UNITY_STANDALONE_OSX
+					optimizedPersistentDataPath = Path.Combine(
+						Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
 						Application.companyName, Application.productName);
 				#endif
 
