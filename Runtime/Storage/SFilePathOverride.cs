@@ -5,7 +5,7 @@ using System;
 namespace DragonResonance.Storage
 {
 	[Serializable]
-	public struct SSavableOverride
+	public struct SFilePathOverride
 	{
 		public string FilePath;
 		[TypeFilter(typeof(ISavableData))] public string[] Types;

@@ -25,7 +25,7 @@ namespace DragonResonance.Storage
 		[SerializeField] private bool _loadOnStart = true;
 		[SerializeField] private bool _useCompactData = false;
 		[SerializeField] private string _defaultFilePath = "local.json";
-		[SerializeField] private SSavableOverride[] _overrides = { };
+		[SerializeField] private SFilePathOverride[] _overrides = { };
 
 
 		private bool _ready = false;
@@ -84,7 +84,7 @@ namespace DragonResonance.Storage
 				string persistentDataPath = GetOptimizedPersistentDataPath();
 				if (!Directory.CreateDirectory(persistentDataPath).Exists) return;
 
-				foreach (SSavableOverride savableOverride in _overrides) {
+				foreach (SFilePathOverride savableOverride in _overrides) {
 					temporalJsonNode = JSONNode.Parse("{}");
 					foreach (string savableType in savableOverride.Types) {
 						Type type = Type.GetType(savableType);
@@ -126,7 +126,7 @@ namespace DragonResonance.Storage
 		#region Publics - Data Management
 
 
-			public bool Get<T>(out T data, T fallback) where T : ISavableData
+			public bool Get<T>(out T data, T fallback) where T : struct, ISavableData
 			{
 				data = fallback;
 
@@ -143,7 +143,7 @@ namespace DragonResonance.Storage
 			}
 
 
-			public void Set<T>(T data) where T : ISavableData
+			public void Set<T>(T data) where T : struct, ISavableData
 			{
 				string jsonData = JsonUtility.ToJson(data);
 				_data.AddOrSet(typeof(T), jsonData);
