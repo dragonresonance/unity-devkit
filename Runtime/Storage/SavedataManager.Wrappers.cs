@@ -1,41 +1,65 @@
-#if UNITY_EDITOR && SIMPLEJSON
+#if SIMPLEJSON
 
 
 using System.Collections.Generic;
+using System;
 using Tabernero.SimpleJSON;
-using UnityEditor;
 using UnityEngine;
 
 
 namespace DragonResonance.Storage
 {
-	[CustomEditor(typeof(SavedataManager))]
-	public class SavedataManagerEditor : UnityEditor.Editor
+	public partial class SavedataManager
 	{
-		public override void OnInspectorGUI()
-		{
-			base.OnInspectorGUI();
-			SavedataManager savedataManager = (SavedataManager)base.target;
+		private readonly Dictionary<Delegate, Action<JSONNode>> _wrappers = new();
 
-			EditorGUILayout.Separator();
-			EditorGUILayout.LabelField("Controls", EditorStyles.boldLabel);
-			if (GUILayout.Button("Open Save Directory"))
-				EditorUtility.RevealInFinder(savedataManager.OptimizedPersistentDataPath);
-			if (GUILayout.Button(nameof(SavedataManager.Load)))
-				savedataManager.Load();
-			if (GUILayout.Button(nameof(SavedataManager.Save)))
-				savedataManager.Save();
-			if (GUILayout.Button("Save and Reload"))
-				savedataManager.SaveReload();
 
-			EditorGUILayout.Separator();
-			EditorGUILayout.LabelField("Data", EditorStyles.boldLabel);
-			EditorGUILayout.TextField($"Current Save Directory", savedataManager.OptimizedPersistentDataPath);
-			foreach (KeyValuePair<string, JSONNode> dataKeyValuePair in savedataManager.Data) {
-				EditorGUILayout.LabelField(dataKeyValuePair.Key, EditorStyles.miniLabel);
-				EditorGUILayout.TextArea(dataKeyValuePair.Value.ToString(savedataManager.UseCompactData));
+		#region Publics - Data
+
+			public bool Get<T>(out T data, T fallback = default) where T : struct, ISavableData
+			{
+				data = fallback;
+
+				if (Get(fallback.Key, out JSONNode json)) {
+					data = JsonUtility.FromJson<T>(json.ToString());
+					return true;
+				}
+
+				return false;
 			}
-		}
+
+			public void Set<T>(T savable) where T : struct, ISavableData
+			{
+				Set(savable.Key, JSONNode.Parse(JsonUtility.ToJson(savable)));
+			}
+
+		#endregion
+
+
+		#region Publics - Events
+
+			public void Subscribe<T>(string key, Action<T> handler) where T : struct, ISavableData
+			{
+				Action<JSONNode> wrapper = json => handler(JsonUtility.FromJson<T>(json.ToString()));
+				_wrappers[handler] = wrapper;
+
+				if (_events.TryGetValue(key, out Action<JSONNode> current))
+					_events[key] = current + wrapper;
+				else
+					_events[key] = wrapper;
+			}
+
+			public void Unsubscribe<T>(string key, Action<T> handler) where T : struct, ISavableData
+			{
+				if (_events.TryGetValue(key, out Action<JSONNode> current)) {
+					if (_wrappers.TryGetValue(handler, out Action<JSONNode> wrapper))
+						_events[key] = current - wrapper;
+
+					_wrappers.Remove(handler);
+				}
+			}
+
+		#endregion
 	}
 }
 

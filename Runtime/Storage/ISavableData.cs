@@ -1,6 +1,9 @@
 namespace DragonResonance.Storage
 {
-	public interface ISavableData { }
+	public interface ISavableData
+	{
+		public string Key { get; }
+	}
 }
 
 

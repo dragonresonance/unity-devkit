@@ -1,3 +1,6 @@
+#if SIMPLEJSON
+
+
 using DragonResonance.Behaviours;
 using DragonResonance.Extensions;
 using System.Collections.Generic;
@@ -5,12 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System;
+using Tabernero.SimpleJSON;
 using UnityEngine;
-
-
-#if SIMPLEJSON
-	using Tabernero.SimpleJSON;
-#endif
 
 
 
@@ -19,17 +18,15 @@ namespace DragonResonance.Storage
 {
 	public partial class SavedataManager : PersistentSingletonPossumBehaviour<SavedataManager>
 	{
-		private const string ASSEMBLY_CLASS_SEPARATOR = "::";
-
-
 		[SerializeField] private bool _loadOnStart = true;
 		[SerializeField] private bool _useCompactData = false;
-		[SerializeField] private string _defaultFilePath = "local.json";
+		[SerializeField] private string _defaultFilePath = "savedata.json";
 		[SerializeField] private SFilePathOverride[] _overrides = { };
 
 
 		private bool _ready = false;
-		private readonly Dictionary<Type, string> _data = new();
+		private readonly Dictionary<string, JSONNode> _data = new();
+		private readonly Dictionary<string, Action<JSONNode>> _events = new();
 
 
 
@@ -49,8 +46,7 @@ namespace DragonResonance.Storage
 
 
 
-		#region Publics - File Management
-		#if SIMPLEJSON
+		#region Publics - Files
 
 
 			[ContextMenu(nameof(Load))]
@@ -64,12 +60,8 @@ namespace DragonResonance.Storage
 					JSONNode jsonNode = JSONNode.Parse(content);
 
 					_data.Clear();
-					foreach (KeyValuePair<string, JSONNode> jsonDataKeyValuePair in jsonNode) {
-						string[] parts = jsonDataKeyValuePair.Key.Split(ASSEMBLY_CLASS_SEPARATOR, 2);
-						Type type = Type.GetType($"{parts[1]}, {parts[0]}");
-						if (type != null)
-							_data.AddOrSet(type, jsonDataKeyValuePair.Value.ToString());
-					}
+					foreach (KeyValuePair<string, JSONNode> jsonDataKeyValuePair in jsonNode)
+						Set(jsonDataKeyValuePair.Key, jsonDataKeyValuePair.Value);
 				}
 
 				_ready = true;
@@ -79,31 +71,25 @@ namespace DragonResonance.Storage
 			[ContextMenu(nameof(Save))]
 			public void Save()
 			{
-				HashSet<Type> storedTypes = new();
+				HashSet<string> writtenKeys = new();
 				JSONNode temporalJsonNode = null;
 				string persistentDataPath = GetOptimizedPersistentDataPath();
 				if (!Directory.CreateDirectory(persistentDataPath).Exists) return;
 
+				// Overrides
 				foreach (SFilePathOverride savableOverride in _overrides) {
-					temporalJsonNode = JSONNode.Parse("{}");
-					foreach (string savableType in savableOverride.Types) {
-						Type type = Type.GetType(savableType);
-						if (type == null) continue;
-
-						temporalJsonNode.Add(
-							$"{type.Assembly.GetName().Name}{ASSEMBLY_CLASS_SEPARATOR}{type.FullName}",
-							JSONNode.Parse(_data[type]));
-						storedTypes.Add(type);
+					temporalJsonNode = JSONNode.New();
+					foreach (string key in savableOverride.Keys) {
+						temporalJsonNode.Add(key, _data[key]);
+						writtenKeys.Add(key);
 					}
 					File.WriteAllText(Path.Combine(persistentDataPath, savableOverride.FilePath), temporalJsonNode.ToString(_useCompactData));
 				}
 
-				temporalJsonNode = JSONNode.Parse("{}");
-				foreach (KeyValuePair<Type, string> keyValuePair in _data.Where(dataEntryPair => !storedTypes.Contains(dataEntryPair.Key))) {
-					temporalJsonNode.Add(
-						$"{keyValuePair.Key.Assembly.GetName().Name}{ASSEMBLY_CLASS_SEPARATOR}{keyValuePair.Key.FullName}",
-						JSONNode.Parse(_data[keyValuePair.Key]));
-					storedTypes.Add(keyValuePair.Key);
+				// Default
+				temporalJsonNode = JSONNode.New();
+				foreach (KeyValuePair<string, JSONNode> keyValuePair in _data.Where(dataEntryPair => !writtenKeys.Contains(dataEntryPair.Key))) {
+					temporalJsonNode.Add(keyValuePair.Key, keyValuePair.Value);
 				}
 				File.WriteAllText(Path.Combine(persistentDataPath, _defaultFilePath), temporalJsonNode.ToString(_useCompactData));
 			}
@@ -117,36 +103,47 @@ namespace DragonResonance.Storage
 			}
 
 
-		#endif
 		#endregion
 
 
 
 
-		#region Publics - Data Management
+		#region Publics - Data
 
 
-			public bool Get<T>(out T data, T fallback) where T : struct, ISavableData
+			public bool Get(string key, out JSONNode json)
 			{
-				data = fallback;
+				if (!_ready) Load();
+				return _data.TryGetValue(key, out json);
+			}
 
-				#if SIMPLEJSON
-					if (!_ready) Load();
-				#endif
-
-				if (_data.TryGetValue(typeof(T), out string jsonData)) {
-					data = JsonUtility.FromJson<T>(jsonData);
-					return true;
-				}
-
-				return false;
+			public void Set(string key, JSONNode json)
+			{
+				_data.AddOrSet(key, json);
+				Publish(key, json);
 			}
 
 
-			public void Set<T>(T data) where T : struct, ISavableData
+		#endregion
+
+
+
+
+		#region Publics - Events
+
+
+			public void Subscribe(string key, Action<JSONNode> handler)
 			{
-				string jsonData = JsonUtility.ToJson(data);
-				_data.AddOrSet(typeof(T), jsonData);
+				if (_events.TryGetValue(key, out Action<JSONNode> current))
+					_events[key] = current + handler;
+				else
+					_events[key] = handler;
+			}
+
+			public void Unsubscribe(string key, Action<JSONNode> handler)
+			{
+				if (_events.TryGetValue(key, out Action<JSONNode> current))
+					_events[key] = current - handler;
 			}
 
 
@@ -157,7 +154,13 @@ namespace DragonResonance.Storage
 
 		#region Privates
 
-			//
+
+			private void Publish(string key, JSONNode eventData)
+			{
+				if (_events.TryGetValue(key, out Action<JSONNode> current))
+					current?.Invoke(eventData);
+			}
+
 
 		#endregion
 
@@ -171,7 +174,7 @@ namespace DragonResonance.Storage
 			public bool UseCompactData => _useCompactData;
 			public string DefaultFilePath => _defaultFilePath;
 			public string OptimizedPersistentDataPath => GetOptimizedPersistentDataPath();
-			public Dictionary<Type, string> Data => _data;
+			public Dictionary<string, JSONNode> Data => _data;
 
 			public IEnumerable<string> FilePaths => _overrides.Select(savable => savable.FilePath).Prepend(_defaultFilePath);
 
@@ -179,6 +182,9 @@ namespace DragonResonance.Storage
 		#endregion
 	}
 }
+
+
+#endif
 
 
 

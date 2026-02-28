@@ -8,7 +8,7 @@ namespace DragonResonance.Storage
 	public struct SFilePathOverride
 	{
 		public string FilePath;
-		[TypeFilter(typeof(ISavableData))] public string[] Types;
+		public string[] Keys;
 	}
 }
 
