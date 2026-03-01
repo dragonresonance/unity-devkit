@@ -71,7 +71,7 @@ namespace DragonResonance.Storage
 			[ContextMenu(nameof(Save))]
 			public void Save()
 			{
-				HashSet<string> writtenKeys = new();
+				HashSet<string> processedKeys = new();
 				JSONNode temporalJsonNode = null;
 				string persistentDataPath = GetOptimizedPersistentDataPath();
 				if (!Directory.CreateDirectory(persistentDataPath).Exists) return;
@@ -80,15 +80,16 @@ namespace DragonResonance.Storage
 				foreach (SFilePathOverride savableOverride in _overrides) {
 					temporalJsonNode = JSONNode.New();
 					foreach (string key in savableOverride.Keys) {
-						temporalJsonNode.Add(key, _data[key]);
-						writtenKeys.Add(key);
+						if (_data.ContainsKey(key))
+							temporalJsonNode.Add(key, _data[key]);
+						processedKeys.Add(key);
 					}
 					File.WriteAllText(Path.Combine(persistentDataPath, savableOverride.FilePath), temporalJsonNode.ToString(_useCompactData));
 				}
 
 				// Default
 				temporalJsonNode = JSONNode.New();
-				foreach (KeyValuePair<string, JSONNode> keyValuePair in _data.Where(dataEntryPair => !writtenKeys.Contains(dataEntryPair.Key))) {
+				foreach (KeyValuePair<string, JSONNode> keyValuePair in _data.Where(dataEntryPair => !processedKeys.Contains(dataEntryPair.Key))) {
 					temporalJsonNode.Add(keyValuePair.Key, keyValuePair.Value);
 				}
 				File.WriteAllText(Path.Combine(persistentDataPath, _defaultFilePath), temporalJsonNode.ToString(_useCompactData));
