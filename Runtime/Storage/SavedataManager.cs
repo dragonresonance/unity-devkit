@@ -52,6 +52,7 @@ namespace DragonResonance.Storage
 			[ContextMenu(nameof(Load))]
 			public void Load()
 			{
+				_data.Clear();
 				foreach (string filePath in this.FilePaths) {
 					string dataFilePath = GetOptimizedPersistentDataPath(filePath);
 					if (!File.Exists(dataFilePath)) return;
@@ -59,7 +60,6 @@ namespace DragonResonance.Storage
 					string content = File.ReadAllText(dataFilePath, Encoding.UTF8);
 					JSONNode jsonNode = JSONNode.Parse(content);
 
-					_data.Clear();
 					foreach (KeyValuePair<string, JSONNode> jsonDataKeyValuePair in jsonNode)
 						Set(jsonDataKeyValuePair.Key, jsonDataKeyValuePair.Value);
 				}
