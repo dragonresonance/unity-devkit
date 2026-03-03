@@ -31,6 +31,9 @@ namespace DragonResonance.Extensions
 			public static float Clamp(this float value, Vector2 range) => Clamp(value, range.x, range.y);
 			public static float Clamp(this float value, float min, float max) => Mathf.Clamp(value, min, max);
 
+			public static float SumToAverage(this float currentAverage, float newValue, int valueCount) =>
+				(((currentAverage * (valueCount - 1)) + newValue) / valueCount);
+
 			public static float SumToAbsolute(this float currentValue, float addend) =>
 				(Mathf.Sign(currentValue) * (Mathf.Abs(currentValue) + addend));
 			public static float SubtractToAbsolute(this float currentValue, float substrahend) =>

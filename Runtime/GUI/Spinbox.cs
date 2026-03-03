@@ -33,11 +33,13 @@ namespace DragonResonance.GUI
 		#region Events
 
 
+			#if UNITY_EDITOR
 			protected override void OnValidate()
 			{
 				base.OnValidate();
 				SpinTo(_selectedIndex);
 			}
+			#endif
 
 
 			public override void OnMove(AxisEventData eventData)
