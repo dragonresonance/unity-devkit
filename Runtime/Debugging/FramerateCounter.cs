@@ -87,7 +87,7 @@ namespace DragonResonance.Debugging
 				_toStringOutput.AppendLine($"FPS:        {_latestFramerate:000.0000}");
 				_toStringOutput.AppendLine($"MinFPS:     {_minFramerate:000.0000}");
 				_toStringOutput.AppendLine($"AvgFPS:     {_averageFramerate:000.0000}");
-				_toStringOutput.AppendLine($"MaxFPS:     {_maxFramerate:000.0000}");
+				_toStringOutput.Append(    $"MaxFPS:     {_maxFramerate:000.0000}");
 				return _toStringOutput.ToString();
 			}
 

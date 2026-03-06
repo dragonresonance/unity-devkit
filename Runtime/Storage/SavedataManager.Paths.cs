@@ -7,7 +7,6 @@ namespace DragonResonance.Storage
 {
 	public partial class SavedataManager
 	{
-
 		#region Publics
 
 			public string GetOptimizedPersistentDataPath() => GetOptimizedPersistentDataPath(".");
