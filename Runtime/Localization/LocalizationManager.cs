@@ -28,7 +28,7 @@ namespace DragonResonance.Localization
 
 		#region Events
 
-			private async void Start()
+			private new async void Awake()
 			{
 				base.Awake();
 				await foreach (string fileContent in FetchResources())
