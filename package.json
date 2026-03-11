@@ -1,12 +1,13 @@
 {
 	"name": "com.dragonresonance.devkit",
-	"version": "2.34.0",
+	"version": "2.35.0",
 	"displayName": "Dragon Resonance DevKit",
 	"description": "",
 	"unity": "6000.0",
 	"license": "Apache-2.0",
 	"dependencies": {
-		"dev.tabernero.simplejson": "2026.2.3"
+		"dev.tabernero.simplejson": "2026.2.3",
+		"com.cysharp.unitask": "2.5.10"
 	},
 	"keywords": [
 		"scripting"

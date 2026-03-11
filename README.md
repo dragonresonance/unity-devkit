@@ -26,6 +26,7 @@ A Unity extension package that enhances the development workflow with improved b
 ## Dependencies
 
 - SimpleJSON: [```https://github.com/davidtabernerom/unity-simplejson.git#master```](https://github.com/davidtabernerom/unity-simplejson.git#master)
+- UniTask: [```https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask```](https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask)
 
 
 ## Issues
