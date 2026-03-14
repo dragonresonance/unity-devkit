@@ -1,6 +1,8 @@
 #if UNITY_NGO
 
 
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
@@ -40,6 +42,8 @@ namespace DragonResonance.Behaviours
 		#region Properties
 
 			public RectTransform rectTransform => (RectTransform)base.transform;
+			public IEnumerable<Transform> children => from object child in base.transform select child as Transform;
+			public IEnumerable<RectTransform> rectChildren => from object child in base.transform select child as RectTransform;
 
 		#endregion
 
