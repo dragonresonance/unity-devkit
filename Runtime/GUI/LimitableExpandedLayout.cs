@@ -1,3 +1,4 @@
+using DragonResonance.Attributes;
 using DragonResonance.Extensions;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,20 +9,21 @@ using UnityEngine;
 
 namespace DragonResonance.GUI
 {
+	[AddComponentMenu("Layout/Limitable Expanded Layout")]
 	[ExecuteAlways]
 	public class LimitableExpandedLayout : UIBehaviour, ILayoutSelfController
 	{
 		[Header("Horizontal")]
 		[SerializeField] private bool _handleMaxWidth = false;
-		[SerializeField] private Vector2 _horizontalMargins = new(8f, 8f);
-		[SerializeField] private float _horizontalOffset = 0f;
-		[SerializeField] [Min(0)] private float _maxWidth = 800f;
+		[ShowIf(nameof(_handleMaxWidth))] [SerializeField] private Vector2 _horizontalMargins = new(8f, 8f);
+		[ShowIf(nameof(_handleMaxWidth))] [SerializeField] private float _horizontalOffset = 0f;
+		[ShowIf(nameof(_handleMaxWidth))] [SerializeField] [Min(0)] private float _maxWidth = 800f;
 
 		[Header("Vertical")]
 		[SerializeField] private bool _handleMaxHeight = false;
-		[SerializeField] private Vector2 _verticalMargins = new(8f, 8f);
-		[SerializeField] private float _verticalOffset = 0f;
-		[SerializeField] [Min(0)] private float _maxHeight = 400f;
+		[ShowIf(nameof(_handleMaxHeight))] [SerializeField] private Vector2 _verticalMargins = new(8f, 8f);
+		[ShowIf(nameof(_handleMaxHeight))] [SerializeField] private float _verticalOffset = 0f;
+		[ShowIf(nameof(_handleMaxHeight))] [SerializeField] [Min(0)] private float _maxHeight = 400f;
 
 
 		#pragma warning disable 649
@@ -75,15 +77,17 @@ namespace DragonResonance.GUI
 				m_Tracker.Add(this, this.rectTransform, DrivenTransformProperties.SizeDeltaX);
 
 				float anchoredPositionX = ((_horizontalMargins.x + _horizontalOffset) - (_horizontalMargins.y - _horizontalOffset)) / 2f;
-				float marginsWidth = _horizontalMargins.x + _horizontalMargins.y;
-				float finalMaxWidth = _maxWidth - marginsWidth;
-				float widthExcess = rectTransform.rect.width - finalMaxWidth;
+				//float marginsWidth = _horizontalMargins.x + _horizontalMargins.y;
+				//float finalMaxWidth = _maxWidth - marginsWidth;
+				//float widthExcess = this.rectTransform.rect.width - finalMaxWidth;
 
 				Vector2 currentSizeDelta = this.rectTransform.sizeDelta;
-				this.rectTransform.anchorMin = new Vector2(0, this.rectTransform.anchorMin.y);
-				this.rectTransform.anchorMax = new Vector2(1, this.rectTransform.anchorMax.y);
+				this.rectTransform.anchorMin = new Vector2(0f, this.rectTransform.anchorMin.y);
+				this.rectTransform.anchorMax = new Vector2(1f, this.rectTransform.anchorMax.y);
 				this.rectTransform.anchoredPosition = new Vector2(anchoredPositionX, this.rectTransform.anchoredPosition.y);
-				this.rectTransform.sizeDelta = new Vector2((currentSizeDelta.x - widthExcess).UpperClamp(marginsWidth), currentSizeDelta.y);
+				//this.rectTransform.sizeDelta = new Vector2((currentSizeDelta.x - widthExcess).UpperClamp(marginsWidth), currentSizeDelta.y);
+				this.rectTransform.sizeDelta = new Vector2(0f, currentSizeDelta.y);
+				this.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, this.rectTransform.rect.width.UpperClamp(_maxWidth));
 			}
 
 
@@ -98,15 +102,17 @@ namespace DragonResonance.GUI
 				m_Tracker.Add(this, this.rectTransform, DrivenTransformProperties.SizeDeltaY);
 
 				float anchoredPositionY = -((_verticalMargins.x + _verticalOffset) - (_verticalMargins.y - _verticalOffset)) / 2f;
-				float marginsHeight = _verticalMargins.x + _verticalMargins.y;
-				float finalMaxHeight = _maxHeight - marginsHeight;
-				float heightExcess = rectTransform.rect.height - finalMaxHeight;
+				//float marginsHeight = _verticalMargins.x + _verticalMargins.y;
+				//float finalMaxHeight = _maxHeight - marginsHeight;
+				//float heightExcess = this.rectTransform.rect.height - finalMaxHeight;
 
 				Vector2 currentSizeDelta = this.rectTransform.sizeDelta;
-				this.rectTransform.anchorMin = new Vector2(this.rectTransform.anchorMin.x, 0);
-				this.rectTransform.anchorMax = new Vector2(this.rectTransform.anchorMax.x, 1);
+				this.rectTransform.anchorMin = new Vector2(this.rectTransform.anchorMin.x, 0f);
+				this.rectTransform.anchorMax = new Vector2(this.rectTransform.anchorMax.x, 1f);
 				this.rectTransform.anchoredPosition = new Vector2(this.rectTransform.anchoredPosition.x, anchoredPositionY);
-				this.rectTransform.sizeDelta = new Vector2(currentSizeDelta.x, (currentSizeDelta.y - heightExcess).UpperClamp(marginsHeight));
+				//this.rectTransform.sizeDelta = new Vector2(currentSizeDelta.x, (currentSizeDelta.y - heightExcess).UpperClamp(marginsHeight));
+				this.rectTransform.sizeDelta = new Vector2(currentSizeDelta.x, 0f);
+				this.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, this.rectTransform.rect.height.UpperClamp(_maxHeight));
 			}
 
 
