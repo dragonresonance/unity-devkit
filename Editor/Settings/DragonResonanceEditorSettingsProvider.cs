@@ -1,40 +1,46 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 
 
-using DragonResonance.Extensions;
-using System;
 using UnityEditor;
-using UnityEngine;
 
 
-namespace DragonResonance.Editor.Attributes
+namespace DragonResonance.Editor.Settings
 {
-	public class ADropdownArrayAttributeDrawer : PropertyDrawer
+	public class DragonResonanceEditorSettingsProvider : SettingsProvider
 	{
-		protected virtual string[] GetItems(SerializedProperty property) => Array.Empty<string>();	// The method to override and retrieve the items
+		private const string SettingsPath = "Project/Dragon Resonance";
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			string[] items = GetItems(property);
+		private static DragonResonanceEditorSettings _settings;
 
-			if (items.Length.IsZero()) {
-				EditorGUI.HelpBox(position, $"{this.GetType().Name} has zero items", MessageType.Warning);
-				return;
+
+		#region Constructors
+
+			public DragonResonanceEditorSettingsProvider(string path, SettingsScope scope) : base(path, scope) { }
+
+		#endregion
+
+
+		#region Publics
+
+			[SettingsProvider]
+			public static SettingsProvider Create()
+			{
+				return new DragonResonanceEditorSettingsProvider(SettingsPath, SettingsScope.Project);
 			}
 
-			EditorGUI.BeginProperty(position, label, property);
+			public override void OnGUI(string searchContext)
 			{
-				int selectedIndex;
+				_settings = DragonResonanceEditorSettings.instance;
 				EditorGUI.BeginChangeCheck();
 				{
-					int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
-					selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
+					_settings.EditorTestBool = EditorGUILayout.Toggle("Editor Test Bool", _settings.EditorTestBool);
+					_settings.EditorTestString = EditorGUILayout.TextField("Editor Test String", _settings.EditorTestString);
 				}
 				if (EditorGUI.EndChangeCheck())
-					property.stringValue = items[selectedIndex];
+					_settings.Save();
 			}
-			EditorGUI.EndProperty();
-		}
+
+		#endregion
 	}
 }
 

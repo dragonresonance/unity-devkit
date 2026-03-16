@@ -1,45 +1,57 @@
-﻿#if UNITY_EDITOR
-
-
-using DragonResonance.Extensions;
-using System;
-using UnityEditor;
 using UnityEngine;
 
 
-namespace DragonResonance.Editor.Attributes
+namespace DragonResonance.Behaviours
 {
-	public class ADropdownArrayAttributeDrawer : PropertyDrawer
+	public class SingletonScriptableObject<T> : ScriptableObject where T : ScriptableObject
 	{
-		protected virtual string[] GetItems(SerializedProperty property) => Array.Empty<string>();	// The method to override and retrieve the items
+		internal static T _instance = null;
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			string[] items = GetItems(property);
 
-			if (items.Length.IsZero()) {
-				EditorGUI.HelpBox(position, $"{this.GetType().Name} has zero items", MessageType.Warning);
-				return;
-			}
+		#region Events
 
-			EditorGUI.BeginProperty(position, label, property);
+			protected void Awake() => AssessInstance();
+			protected void OnValidate() => AssessInstance();
+
+		#endregion
+
+
+		#region Publics
+
+			public static bool TryGetInstance(out T instance) => ((instance = GetInstance()) != null);
+
+			public static T GetInstance()
 			{
-				int selectedIndex;
-				EditorGUI.BeginChangeCheck();
-				{
-					int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
-					selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
-				}
-				if (EditorGUI.EndChangeCheck())
-					property.stringValue = items[selectedIndex];
+				if ((_instance == null) && (FindAnyObjectByType(typeof(T)) is SingletonScriptableObject<T> instance))
+					instance.AssessInstance();
+
+				return _instance;
 			}
-			EditorGUI.EndProperty();
-		}
+
+		#endregion
+
+
+		#region Inheritables
+
+			protected virtual void AssessInstance()
+			{
+				if (_instance == null)
+					_instance = this as T;
+				else if (_instance != this)
+					Debug.LogError($"This instance ({base.name}) is inaccessible as Instance");
+			}
+
+		#endregion
+
+
+		#region Properties
+
+			public static T CachedInstance => _instance;
+			public static T Instance => GetInstance();
+
+		#endregion
 	}
 }
-
-
-#endif
 
 
 /*       ________________________________________________________________       */

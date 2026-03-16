@@ -1,40 +1,60 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 
 
-using DragonResonance.Extensions;
-using System;
+using DragonResonance.Settings;
 using UnityEditor;
 using UnityEngine;
 
 
-namespace DragonResonance.Editor.Attributes
+namespace DragonResonance.Editor.Settings
 {
-	public class ADropdownArrayAttributeDrawer : PropertyDrawer
+	public class DragonResonanceRuntimeSettingsProvider : SettingsProvider
 	{
-		protected virtual string[] GetItems(SerializedProperty property) => Array.Empty<string>();	// The method to override and retrieve the items
+		private const string SettingsPath = "Project/Dragon Resonance/Runtime";
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			string[] items = GetItems(property);
+		private static DragonResonanceRuntimeSettings _settings;
 
-			if (items.Length.IsZero()) {
-				EditorGUI.HelpBox(position, $"{this.GetType().Name} has zero items", MessageType.Warning);
-				return;
+
+		#region Constructors
+
+			public DragonResonanceRuntimeSettingsProvider(string path, SettingsScope scope) : base(path, scope) { }
+
+		#endregion
+
+
+
+		#region Publics
+
+			[SettingsProvider]
+			public static SettingsProvider Create()
+			{
+				string[] guids = AssetDatabase.FindAssets($"t:{nameof(DragonResonanceRuntimeSettings)}");
+
+				if (guids.Length > 0) {
+					string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+					_settings = AssetDatabase.LoadAssetAtPath<DragonResonanceRuntimeSettings>(path);
+				}
+				else {
+					_settings = ScriptableObject.CreateInstance<DragonResonanceRuntimeSettings>();
+					AssetDatabase.CreateAsset(_settings, $"Assets/DragonResonanceSettings.asset");
+					AssetDatabase.SaveAssets();
+				}
+
+				return new DragonResonanceRuntimeSettingsProvider(SettingsPath, SettingsScope.Project);
 			}
 
-			EditorGUI.BeginProperty(position, label, property);
+			public override void OnGUI(string searchContext)
 			{
-				int selectedIndex;
 				EditorGUI.BeginChangeCheck();
 				{
-					int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
-					selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
+					_settings.RuntimeTestBool = EditorGUILayout.Toggle("Runtime Test Bool", _settings.RuntimeTestBool);
+					_settings.RuntimeTestString = EditorGUILayout.TextField("Runtime Test String", _settings.RuntimeTestString);
 				}
 				if (EditorGUI.EndChangeCheck())
-					property.stringValue = items[selectedIndex];
+					EditorUtility.SetDirty(_settings);
 			}
-			EditorGUI.EndProperty();
-		}
+
+		#endregion
 	}
 }
 

@@ -1,40 +1,23 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 
 
-using DragonResonance.Extensions;
-using System;
 using UnityEditor;
-using UnityEngine;
 
 
-namespace DragonResonance.Editor.Attributes
+namespace DragonResonance.Editor.Settings
 {
-	public class ADropdownArrayAttributeDrawer : PropertyDrawer
+	[FilePath("ProjectSettings/DragonResonanceSettings.asset", FilePathAttribute.Location.ProjectFolder)]
+	public class DragonResonanceEditorSettings : ScriptableSingleton<DragonResonanceEditorSettings>
 	{
-		protected virtual string[] GetItems(SerializedProperty property) => Array.Empty<string>();	// The method to override and retrieve the items
+		public bool EditorTestBool = true;
+		public string EditorTestString = "";
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			string[] items = GetItems(property);
 
-			if (items.Length.IsZero()) {
-				EditorGUI.HelpBox(position, $"{this.GetType().Name} has zero items", MessageType.Warning);
-				return;
-			}
+		#region Publics
 
-			EditorGUI.BeginProperty(position, label, property);
-			{
-				int selectedIndex;
-				EditorGUI.BeginChangeCheck();
-				{
-					int currentIndex = Mathf.Max(0, Array.IndexOf(items, property.stringValue));
-					selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, items);
-				}
-				if (EditorGUI.EndChangeCheck())
-					property.stringValue = items[selectedIndex];
-			}
-			EditorGUI.EndProperty();
-		}
+			public void Save() => base.Save(true);
+
+		#endregion
 	}
 }
 
