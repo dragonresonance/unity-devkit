@@ -8,16 +8,17 @@ using UnityEngine;
 
 namespace DragonResonance.Editor.Settings
 {
-	public class DragonResonanceRuntimeSettingsProvider : SettingsProvider
+	public class SavedataSettingsProvider : SettingsProvider
 	{
-		private const string SettingsPath = "Project/Dragon Resonance/Runtime";
+		private const string SettingsPath = "Project/Dragon Resonance/Savedata";
 
-		private static DragonResonanceRuntimeSettings _settings;
+
+		private static SavedataSettings _settings;
 
 
 		#region Constructors
 
-			public DragonResonanceRuntimeSettingsProvider(string path, SettingsScope scope) : base(path, scope) { }
+			public SavedataSettingsProvider(string path, SettingsScope scope) : base(path, scope) { }
 
 		#endregion
 
@@ -28,26 +29,28 @@ namespace DragonResonance.Editor.Settings
 			[SettingsProvider]
 			public static SettingsProvider Create()
 			{
-				string[] guids = AssetDatabase.FindAssets($"t:{nameof(DragonResonanceRuntimeSettings)}");
+				string[] guids = AssetDatabase.FindAssets($"t:{nameof(SavedataSettings)}");
 
 				if (guids.Length > 0) {
 					string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-					_settings = AssetDatabase.LoadAssetAtPath<DragonResonanceRuntimeSettings>(path);
+					_settings = AssetDatabase.LoadAssetAtPath<SavedataSettings>(path);
 				}
 				else {
-					_settings = ScriptableObject.CreateInstance<DragonResonanceRuntimeSettings>();
-					AssetDatabase.CreateAsset(_settings, $"Assets/DragonResonanceSettings.asset");
+					_settings = ScriptableObject.CreateInstance<SavedataSettings>();
+					AssetDatabase.CreateAsset(_settings, $"Assets/SavedataSettings.asset");
 					AssetDatabase.SaveAssets();
 				}
 
-				return new DragonResonanceRuntimeSettingsProvider(SettingsPath, SettingsScope.Project);
+				return new SavedataSettingsProvider(SettingsPath, SettingsScope.Project);
 			}
 
 			public override void OnGUI(string searchContext)
 			{
 				EditorGUI.BeginChangeCheck();
 				{
-					_settings.RuntimeTestBool = EditorGUILayout.Toggle("Runtime Test Bool", _settings.RuntimeTestBool);
+					_settings.Enable = EditorGUILayout.Toggle("Enable", _settings.Enable);
+					if (!_settings.Enable) return;
+
 					_settings.RuntimeTestString = EditorGUILayout.TextField("Runtime Test String", _settings.RuntimeTestString);
 				}
 				if (EditorGUI.EndChangeCheck())

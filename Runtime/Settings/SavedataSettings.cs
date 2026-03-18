@@ -1,13 +1,12 @@
-using System;
+using DragonResonance.Behaviours;
 
 
-namespace DragonResonance.Storage
+namespace DragonResonance.Settings
 {
-	[Serializable]
-	public struct SFilePathOverride
+	public class SavedataSettings : SingletonScriptableObject<SavedataSettings>
 	{
-		public string FilePath;
-		public string[] Keys;
+		public bool Enable = false;
+		public string RuntimeTestString = "";
 	}
 }
 

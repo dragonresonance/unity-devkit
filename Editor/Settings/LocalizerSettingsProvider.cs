@@ -1,24 +1,27 @@
 #if UNITY_EDITOR
 
 
+using DragonResonance.Settings;
 using UnityEditor;
+using UnityEngine;
 
 
 namespace DragonResonance.Editor.Settings
 {
-	public class DragonResonanceEditorSettingsProvider : SettingsProvider
+	public class LocalizerSettingsProvider : SettingsProvider
 	{
-		private const string SettingsPath = "Project/Dragon Resonance";
+		private const string SettingsPath = "Project/Dragon Resonance/Localizer";
 
 
-		private static DragonResonanceEditorSettings _settings;
+		private static LocalizerSettings _settings;
 
 
 		#region Constructors
 
-			public DragonResonanceEditorSettingsProvider(string path, SettingsScope scope) : base(path, scope) { }
+			public LocalizerSettingsProvider(string path, SettingsScope scope) : base(path, scope) { }
 
 		#endregion
+
 
 
 		#region Publics
@@ -26,19 +29,32 @@ namespace DragonResonance.Editor.Settings
 			[SettingsProvider]
 			public static SettingsProvider Create()
 			{
-				return new DragonResonanceEditorSettingsProvider(SettingsPath, SettingsScope.Project);
+				string[] guids = AssetDatabase.FindAssets($"t:{nameof(LocalizerSettings)}");
+
+				if (guids.Length > 0) {
+					string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+					_settings = AssetDatabase.LoadAssetAtPath<LocalizerSettings>(path);
+				}
+				else {
+					_settings = ScriptableObject.CreateInstance<LocalizerSettings>();
+					AssetDatabase.CreateAsset(_settings, $"Assets/LocalizerSettings.asset");
+					AssetDatabase.SaveAssets();
+				}
+
+				return new LocalizerSettingsProvider(SettingsPath, SettingsScope.Project);
 			}
 
 			public override void OnGUI(string searchContext)
 			{
-				_settings = DragonResonanceEditorSettings.instance;
 				EditorGUI.BeginChangeCheck();
 				{
-					_settings.EditorTestBool = EditorGUILayout.Toggle("Editor Test Bool", _settings.EditorTestBool);
-					_settings.EditorTestString = EditorGUILayout.TextField("Editor Test String", _settings.EditorTestString);
+					_settings.Enable = EditorGUILayout.Toggle("Enable", _settings.Enable);
+					if (!_settings.Enable) return;
+
+					_settings.RuntimeTestString = EditorGUILayout.TextField("Runtime Test String", _settings.RuntimeTestString);
 				}
 				if (EditorGUI.EndChangeCheck())
-					_settings.Save();
+					EditorUtility.SetDirty(_settings);
 			}
 
 		#endregion

@@ -3,9 +3,9 @@ using DragonResonance.Behaviours;
 
 namespace DragonResonance.Settings
 {
-	public class DragonResonanceRuntimeSettings : SingletonScriptableObject<DragonResonanceRuntimeSettings>
+	public class LocalizerSettings : SingletonScriptableObject<LocalizerSettings>
 	{
-		public bool RuntimeTestBool = true;
+		public bool Enable = false;
 		public string RuntimeTestString = "";
 	}
 }
