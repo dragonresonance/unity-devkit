@@ -9,7 +9,7 @@ namespace DragonResonance.Miscellany
 {
 	public class DefineSymbolsGameobjectDestroyer : PossumBehaviour
 	{
-		[SerializeField] private bool _blacklistMode = false;
+		[SerializeField] private bool _whitelistMode = true;
 		[SerializeField] private string[] _definitions = { };
 
 
@@ -21,7 +21,7 @@ namespace DragonResonance.Miscellany
 			private void Awake()
 			{
 				AddDefinitions();
-				if (!_blacklistMode == _definedDefinitions.MatchesAny(_definitions))
+				if (_whitelistMode == _definedDefinitions.MatchesAny(_definitions))
 					PerformingAction.Invoke(this.gameObject);
 			}
 
