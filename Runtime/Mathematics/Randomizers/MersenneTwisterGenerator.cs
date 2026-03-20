@@ -3,9 +3,9 @@ using System;
 
 
 
-namespace PossumScream.Mathematics.Randomizers
+namespace DragonResonance.Mathematics.Randomizers
 {
-	public class MersenneTwisterGenerator : IPseudorandomNumberGenerator
+	public class MersenneTwisterGenerator
 	{
 		// Period parameters
 		private const int N = 624;
@@ -163,7 +163,7 @@ namespace PossumScream.Mathematics.Randomizers
 		#region Properties
 
 
-			public uint seed => this._seed;
+			public uint Seed => this._seed;
 
 
 		#endregion
@@ -173,18 +173,23 @@ namespace PossumScream.Mathematics.Randomizers
 
 
 
-/*                                                                                            */
-/*                      |>  Based on the script of MarcAlx @ GitHub.  <|                      */
-/*           |>  Inspired in the work of Makoto Matsumoto and Takuji Nishimura.  <|           */
-/*                                                                                            */
-/*          ______                               _______                                      */
-/*          \  __ \____  ____________  ______ ___\  ___/_____________  ____  ____ ___         */
-/*          / /_/ / __ \/ ___/ ___/ / / / __ \__ \\__ \/ ___/ ___/ _ \/ __ \/ __ \__ \        */
-/*         / ____/ /_/ /__  /__  / /_/ / / / / / /__/ / /__/ /  / ___/ /_/ / / / / / /        */
-/*        /_/    \____/____/____/\____/_/ /_/ /_/____/\___/_/   \___/\__/_/_/ /_/ /__\        */
-/*                                                                                            */
-/*        Licensed under the Apache License, Version 2.0. See LICENSE.md for more info        */
-/*        David Tabernero M. @ PossumScream                      Copyright © 2021-2023        */
-/*        GitLab - GitHub: possumscream                            All rights reserved        */
-/*        -------------------------                                  -----------------        */
-/*                                                                                            */
+/*       ________________________________________________________________       */
+/*                                                                              */
+/*               |>  Based on the script of MarcAlx @ GitHub.  <|               */
+/*    |>  Inspired in the work of Makoto Matsumoto and Takuji Nishimura.  <|    */
+/*       ________________________________________________________________       */
+/*           _________   _______ ________  _______  _______  ___    _           */
+/*           |        \ |______/ |______| |  _____ |       | |  \   |           */
+/*           |________/ |     \_ |      | |______| |_______| |   \__|           */
+/*           ______ _____ _____ _____ __   _ _____ __   _ _____ _____           */
+/*           |____/ |____ [___  |   | | \  | |___| | \  | |     |____           */
+/*           |    \ |____ ____] |___| |  \_| |   | |  \_| |____ |____           */
+/*       ________________________________________________________________       */
+/*                                                                              */
+/*           David Tabernero M.  <https://github.com/davidtabernerom>           */
+/*           Dragon Resonance    <https://github.com/dragonresonance>           */
+/*                  Copyright © 2021-2025. All rights reserved.                 */
+/*                Licensed under the Apache License, Version 2.0.               */
+/*                         See LICENSE.md for more info.                        */
+/*       ________________________________________________________________       */
+/*                                                                              */
