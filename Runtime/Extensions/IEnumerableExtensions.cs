@@ -92,6 +92,15 @@ namespace DragonResonance.Extensions
 			}
 
 
+			public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable)
+			{
+				return enumerable
+					.Select(item => (item, key: UnityEngine.Random.value))
+					.OrderBy(itemTuple => itemTuple.key)
+					.Select(itemTuple => itemTuple.item);
+			}
+
+
 			public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
 			{
 				foreach (T item in enumerable)

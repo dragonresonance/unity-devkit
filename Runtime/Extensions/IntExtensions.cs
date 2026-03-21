@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -48,9 +49,21 @@ namespace DragonResonance.Extensions
 		#endregion
 
 
+		#region Iterations
+
+			public static void Times(this int repetitions, Action<int> action)
+			{
+				for (int loopIndex = 0; loopIndex < repetitions; loopIndex++)
+					action.Invoke(loopIndex);
+			}
+
+		#endregion
+
+
 		#region Casts
 
 			public static bool AsBool(this int numericValue) => (numericValue != 0);
+			public static char AsChar(this int numericValue) => (char)(numericValue + '0');
 
 		#endregion
 	}
