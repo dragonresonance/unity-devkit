@@ -28,9 +28,9 @@ namespace DragonResonance.Storage
 				return false;
 			}
 
-			public void Set<T>(T savable) where T : struct, ISavableData
+			public void Set<T>(T data) where T : struct, ISavableData
 			{
-				Set(savable.Key, JSONNode.Parse(JsonUtility.ToJson(savable)));
+				Set(data.Key, JSONNode.Parse(JsonUtility.ToJson(data)));
 			}
 
 		#endregion
@@ -38,17 +38,28 @@ namespace DragonResonance.Storage
 
 		#region Publics - Events
 
-			public void Subscribe<T>(string key, Action<T> handler) where T : struct, ISavableData
+			public void SubscribeAndLoad<T>(Action<T> handler) where T : struct, ISavableData => SubscribeAndLoad(typeof(T).Name, handler);
+			public void SubscribeAndLoad<T>(string key, Action<T> handler) where T : struct, ISavableData
 			{
-				Action<JSONNode> wrapper = json => handler(JsonUtility.FromJson<T>(json.ToString()));
-				_wrappers[handler] = wrapper;
-
-				if (_events.TryGetValue(key, out Action<JSONNode> current))
-					_events[key] = current + wrapper;
-				else
-					_events[key] = wrapper;
+				Subscribe(key, handler);
+				if (Get(out T data))
+					Set(data);
 			}
 
+			public void Subscribe<T>(Action<T> handler) where T : struct, ISavableData => Subscribe(typeof(T).Name, handler);
+			public void Subscribe<T>(string key, Action<T> handler) where T : struct, ISavableData
+			{
+				void Wrapper(JSONNode json) => handler.Invoke(JsonUtility.FromJson<T>(json.ToString()));
+
+				_wrappers[handler] = Wrapper;
+
+				if (_events.TryGetValue(key, out Action<JSONNode> current))
+					_events[key] = current + Wrapper;
+				else
+					_events[key] = Wrapper;
+			}
+
+			public void Unsubscribe<T>(Action<T> handler) where T : struct, ISavableData => Unsubscribe(typeof(T).Name, handler);
 			public void Unsubscribe<T>(string key, Action<T> handler) where T : struct, ISavableData
 			{
 				if (_events.TryGetValue(key, out Action<JSONNode> current)) {
