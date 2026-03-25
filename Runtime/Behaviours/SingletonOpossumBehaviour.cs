@@ -70,9 +70,8 @@ namespace DragonResonance.Behaviours
 
 		#region Properties
 
-			public static T CachedInstance => _instance;
+			public static T Current => _instance;
 			public static T Instance => GetInstance();
-			public static T Current => GetInstance();
 
 		#endregion
 	}

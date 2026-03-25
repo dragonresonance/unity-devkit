@@ -1,62 +1,15 @@
-using System;
+using UnityEngine.Events;
 using UnityEngine;
 
 
-namespace DragonResonance.Behaviours
+namespace DragonResonance.Events
 {
-	[DisallowMultipleComponent]
-	public abstract class SingletonPossumBehaviour<T> : PossumBehaviour where T : Component
+	[CreateAssetMenu(menuName = "Dragon Resonance/Events/GameObject Event Channel")]
+	public class SOGameObjectEventChannel : ScriptableObject
 	{
-		internal static T _instance = null;
-		public static event Action OnInstanced = null;
+		public UnityAction<GameObject> OnEventRaised;
 
-
-		#region Events
-
-			protected void Awake() => AssessInstance();
-
-		#endregion
-
-
-		#region Publics
-
-			public static bool TryGetInstance(out T instance) => ((instance = GetInstance()) != null);
-
-			public static T GetInstance()
-			{
-				if ((_instance == null) && (FindAnyObjectByType(typeof(T)) is SingletonPossumBehaviour<T> instance))
-					instance.AssessInstance();
-
-				return _instance;
-			}
-
-		#endregion
-
-
-		#region Inheritables
-
-			protected virtual void InvokeInstantiationEvent() => OnInstanced?.Invoke();
-
-			protected virtual void AssessInstance()
-			{
-				if (_instance == null) {
-					_instance = this as T;
-					InvokeInstantiationEvent();
-				}
-				else if (_instance != this) {
-					Destroy(this);
-				}
-			}
-
-		#endregion
-
-
-		#region Properties
-
-			public static T Current => _instance;
-			public static T Instance => GetInstance();
-
-		#endregion
+		public void RaiseEvent(GameObject data) => OnEventRaised?.Invoke(data);
 	}
 }
 
