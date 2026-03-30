@@ -38,8 +38,8 @@ namespace DragonResonance.Storage
 
 		#region Publics - Events
 
-			public void SubscribeAndLoad<T>(Action<T> handler) where T : struct, ISavableData => SubscribeAndLoad(typeof(T).Name, handler);
-			public void SubscribeAndLoad<T>(string key, Action<T> handler) where T : struct, ISavableData
+			public void SubscribeAndReload<T>(Action<T> handler) where T : struct, ISavableData => SubscribeAndReload(typeof(T).Name, handler);
+			public void SubscribeAndReload<T>(string key, Action<T> handler) where T : struct, ISavableData
 			{
 				Subscribe(key, handler);
 				if (Get(out T data))
