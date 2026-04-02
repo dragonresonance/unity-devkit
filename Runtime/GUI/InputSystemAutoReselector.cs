@@ -14,7 +14,7 @@ namespace DragonResonance.GUI
 {
 	[DisallowMultipleComponent]
 	[RequireComponent(typeof(EventSystem))]
-	public class InputSystemAutoFocus : PossumBehaviour
+	public class InputSystemAutoReselector : PossumBehaviour
 	{
 		[SerializeField] private InputActionReference _navigation = null;
 
@@ -126,7 +126,7 @@ namespace DragonResonance.GUI
 
 	#if UNITY_EDITOR
 	[UnityEditor.CanEditMultipleObjects]
-	[UnityEditor.CustomEditor(typeof(InputSystemAutoFocus))]
+	[UnityEditor.CustomEditor(typeof(InputSystemAutoReselector))]
 	public class InputSystemAutoFocusEditor : UnityEditor.Editor
 	{
 		public override bool RequiresConstantRepaint() => true;
@@ -136,7 +136,7 @@ namespace DragonResonance.GUI
 			base.OnInspectorGUI();
 			if (base.targets.Length > 1) return;
 
-			InputSystemAutoFocus targetInstance = base.target as InputSystemAutoFocus;
+			InputSystemAutoReselector targetInstance = base.target as InputSystemAutoReselector;
 
 			UnityEditor.EditorGUI.BeginDisabledGroup(true);
 			UnityEditor.EditorGUILayout.ObjectField("Last Selected", targetInstance!.LastSelected, typeof(GameObject), false);
