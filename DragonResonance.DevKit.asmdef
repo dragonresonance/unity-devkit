@@ -2,9 +2,6 @@
     "name": "DragonResonance.DevKit",
     "rootNamespace": "DragonResonance",
     "references": [
-        "Tabernero.SimpleJSON",
-        "UniTask",
-        "UniTask.Linq",
         "Unity.InputSystem",
         "Unity.Netcode.Runtime",
         "Unity.TextMeshPro"
@@ -17,16 +14,6 @@
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [
-        {
-            "name": "dev.tabernero.simplejson",
-            "expression": "",
-            "define": "SIMPLEJSON"
-        },
-        {
-            "name": "com.cysharp.unitask",
-            "expression": "",
-            "define": "UNITASK"
-        },
         {
             "name": "com.unity.render-pipelines.universal",
             "expression": "",
