@@ -7,76 +7,64 @@ using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 
-
-
-namespace DragonResonance.Editor.Optimization
+namespace DragonResonance.Editor.Tools
 {
-	public static class ScaleChecker
+	public static class TroublesomeScalesChecker
 	{
 		private static int _zeroScaleCount = 0;
 		private static int _troublesomeScaleCount = 0;
 
 
-
-
 		#region Publics
 
-
-			[MenuItem("Tools/PossumScream/Optimization/Check scene for troublesome scales")]
+			[MenuItem("Tools/Dragon Resonance/Optimization/Check scene for troublesome scales")]
 			public static void CheckSceneForTroublesomeScales()
 			{
-				HLogger.LogInfo("Checking scene for troublesome scales...", typeof(ScaleChecker));
+				HLogger.LogInfo("Checking scene for troublesome scales...", typeof(TroublesomeScalesChecker));
 				{
-					Transform[] sceneTransforms = UnityObject.FindObjectsByType<Transform>(
-						FindObjectsInactive.Include, FindObjectsSortMode.None);
+					Transform[] sceneTransforms = UnityObject.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
 					foreach (Transform transform in sceneTransforms) {
 						Vector3 transformLocalScale = transform.localScale;
 
-						if (CheckZeroScale(transformLocalScale)) {
+						if (CheckForZeroScale(transformLocalScale)) {
 							HLogger.LogInfo($"Has an <color={HLogger.Severity.INFO}><b>all-zero</b></color> scale", transform);
 							_zeroScaleCount++;
 							continue;
 						}
 
-						if (!CheckOneScale(transformLocalScale)) {
+						if (!CheckForUnitScale(transformLocalScale)) {
 							HLogger.LogWarning($"Has a <color={HLogger.Severity.WARN}><b>troublesome</b></color> scale <b>→ [ x:<color={HLogger.Severity.WARN}>{transformLocalScale.x}</color>, y:<color={HLogger.Severity.WARN}>{transformLocalScale.y}</color>, z:<color={HLogger.Severity.WARN}>{transformLocalScale.z}</color> ]</b>", transform);
 							_troublesomeScaleCount++;
 							continue;
 						}
 					}
 
-					HLogger.LogEmphasis($"Analyzed {sceneTransforms.Length} scene scales", typeof(ScaleChecker));
-					HLogger.LogEmphasis($"Detected {_zeroScaleCount} all-zero scales", typeof(ScaleChecker));
-					HLogger.LogEmphasis($"Detected {_troublesomeScaleCount} troublesome scales", typeof(ScaleChecker));
+					HLogger.LogEmphasis($"Analyzed {sceneTransforms.Length} scene scales", typeof(TroublesomeScalesChecker));
+					HLogger.LogEmphasis($"Detected {_zeroScaleCount} all-zero scales", typeof(TroublesomeScalesChecker));
+					HLogger.LogEmphasis($"Detected {_troublesomeScaleCount} troublesome scales", typeof(TroublesomeScalesChecker));
 				}
-				HLogger.LogInfo("Done!", typeof(ScaleChecker));
+				HLogger.LogInfo("Done!", typeof(TroublesomeScalesChecker));
 			}
-
 
 		#endregion
 
 
-
-
 		#region Privates
 
-
-			private static bool CheckZeroScale(Vector3 scale)
+			private static bool CheckForZeroScale(Vector3 scale)
 			{
 				return (Mathf.Approximately(scale.x, 0f) &&
 				        Mathf.Approximately(scale.y, 0f) &&
 				        Mathf.Approximately(scale.z, 0f));
 			}
 
-
-			private static bool CheckOneScale(Vector3 scale)
+			private static bool CheckForUnitScale(Vector3 scale)
 			{
 				return (Mathf.Approximately(scale.x, 1f) &&
 				        Mathf.Approximately(scale.y, 1f) &&
 				        Mathf.Approximately(scale.z, 1f));
 			}
-
 
 		#endregion
 	}
@@ -84,8 +72,6 @@ namespace DragonResonance.Editor.Optimization
 
 
 #endif
-
-
 
 
 /*       ________________________________________________________________       */

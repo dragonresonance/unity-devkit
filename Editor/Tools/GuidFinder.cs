@@ -3,6 +3,7 @@
 
 using UnityEditor;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 
 namespace DragonResonance.Editor.Tools
@@ -10,7 +11,7 @@ namespace DragonResonance.Editor.Tools
 	public class GuidFinder : EditorWindow
 	{
 		private bool _wasFound = false;
-		private Object _foundObject = null;
+		private UnityObject _foundObject = null;
 		private string _foundPath = "";
 		private string _inputGuid = "";
 
@@ -53,10 +54,10 @@ namespace DragonResonance.Editor.Tools
 
 		#region Privates
 
-			private static bool TryFindAsset(string guid, out string path, out Object unityObject)
+			private static bool TryFindAsset(string guid, out string path, out UnityObject unityObject)
 			{
 				path = AssetDatabase.GUIDToAssetPath(guid);
-				unityObject = AssetDatabase.LoadAssetAtPath<Object>(path);
+				unityObject = AssetDatabase.LoadAssetAtPath<UnityObject>(path);
 				return !string.IsNullOrEmpty(path);
 			}
 

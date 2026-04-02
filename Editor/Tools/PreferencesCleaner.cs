@@ -6,16 +6,13 @@ using UnityEditor;
 using UnityEngine;
 
 
-
-
-namespace DragonResonance.Editor.Preferences
+namespace DragonResonance.Editor.Tools
 {
 	public static class PreferencesCleaner
 	{
 		#region Publics
 
-
-			[MenuItem("Tools/PossumScream/Preferences/Clear all PlayerPrefs")]
+			[MenuItem("Tools/Dragon Resonance/Preferences/Clear all PlayerPrefs")]
 			public static void AskClearAllPlayerPrefs()
 			{
 				if (!ShowClearingDialog("PlayerPrefs")) return;
@@ -24,8 +21,7 @@ namespace DragonResonance.Editor.Preferences
 				HLogger.LogInfo("Done!", typeof(PreferencesCleaner));
 			}
 
-
-			[MenuItem("Tools/PossumScream/Preferences/Clear all EditorPrefs")]
+			[MenuItem("Tools/Dragon Resonance/Preferences/Clear all EditorPrefs")]
 			public static void AskClearAllEditorPrefs()
 			{
 				if (!ShowClearingDialog("EditorPrefs")) return;
@@ -34,14 +30,10 @@ namespace DragonResonance.Editor.Preferences
 				HLogger.LogInfo("Done!", typeof(PreferencesCleaner));
 			}
 
-
 		#endregion
 
 
-
-
 		#region Privates
-
 
 			private static bool ShowClearingDialog(string prefsTypeName)
 			{
@@ -51,15 +43,12 @@ namespace DragonResonance.Editor.Preferences
 					"No, cancel");
 			}
 
-
 		#endregion
 	}
 }
 
 
 #endif
-
-
 
 
 /*       ________________________________________________________________       */

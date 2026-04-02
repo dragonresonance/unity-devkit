@@ -9,8 +9,6 @@ using UnityEditor.Build;
 using UnityEditor;
 
 
-
-
 namespace DragonResonance.Editor.Building
 {
 	[InitializeOnLoad]
@@ -20,71 +18,50 @@ namespace DragonResonance.Editor.Building
 		private static readonly List<string> _currentDefinitions = new();
 
 
-
-
 		#region Constructors
 
-
 			static BuildDefines() => OrganizeBuildDefinitions();
-
 
 		#endregion
 
 
-
-
 		#region Publics
 
-
-			[MenuItem("Tools/PossumScream/Compilation/Organize Build Definitions")]
+			[MenuItem("Tools/Dragon Resonance/Building/Organize Build Definitions")]
 			public static void OrganizeBuildDefinitions()
 			{
 				HLogger.Log("Organizing Build Definitions...", typeof(BuildDefines));
 				{
 					_currentDefinitions.Clear();
-					_currentDefinitions.AddRange(BuildDefines.Values);
-
+					_currentDefinitions.AddRange(BuildDefines.CurrentDefinitions);
 					{
 						ReplenishDefinitions(DemonstrationValidDefinitions);
 						ReplenishDefinitions(LoggingValidDefinitions);
-
 						ReplenishDefinitions(ContexterIntegrationValidDefinitions);
 
 						#if STEAMWORKS_INTEGRATION
 							ReplenishDefinitions(SteamworksIntegrationValidDefinitions);
 						#endif
-
 						#if EOS_INTEGRATION
 							ReplenishDefinitions(EOSIntegrationValidDefinitions);
 						#endif
 					}
-
 					ApplyDefinitions(new SortedSet<string>(_currentDefinitions));
 				}
 				HLogger.Log("Done!", typeof(BuildDefines));
 			}
 
-
-			public static void ApplyDefinitions(IEnumerable<string> definitions)
-			{
-				ApplyDefinitions(definitions.ToArray());
-			}
-
-			public static void ApplyDefinitions(string[] definitions)
-			{
-				PlayerSettings.SetScriptingDefineSymbols(
-					NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup),
-					definitions);
-			}
-
-
 		#endregion
-
-
 
 
 		#region Privates
 
+			private static void ApplyDefinitions(IEnumerable<string> definitions)
+			{
+				PlayerSettings.SetScriptingDefineSymbols(
+					NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup),
+					definitions.ToArray());
+			}
 
 			private static void ReplenishDefinitions(IReadOnlyList<string> definitions, int fallbackIndex = 0)
 			{
@@ -96,20 +73,14 @@ namespace DragonResonance.Editor.Building
 					definitions[fallbackIndex]);
 			}
 
-
 		#endregion
-
-
 
 
 		#region Properties
 
-
-			public static IEnumerable<string> Values => PlayerSettings
-				.GetScriptingDefineSymbols(
-					NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup))
+			public static IEnumerable<string> CurrentDefinitions => PlayerSettings
+				.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup))
 				.Split(DEFINITIONS_SEPARATOR);
-
 
 		#endregion
 	}
@@ -117,8 +88,6 @@ namespace DragonResonance.Editor.Building
 
 
 #endif
-
-
 
 
 /*       ________________________________________________________________       */
