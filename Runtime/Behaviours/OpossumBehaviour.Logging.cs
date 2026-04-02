@@ -12,14 +12,14 @@ namespace DragonResonance.Behaviours
 {
 	public abstract partial class OpossumBehaviour	// Logging
 	{
-		[SerializeField] private ELogLevel _loggingMask = ELogLevel.Info | ELogLevel.Emphasis | ELogLevel.Warning | ELogLevel.Error | ELogLevel.Exception;
+		[UnityEngine.Serialization.FormerlySerializedAs("_loggingMask")] [SerializeField] private ELogLevel _logMask = ELogLevel.Info | ELogLevel.Emphasis | ELogLevel.Warning | ELogLevel.Error | ELogLevel.Exception;
 
 
 		#region Inheritables
 
 			protected bool Log(string message = "", [CallerMemberName] string callerMember = null)
 			{
-				if (!_loggingMask.HasFlag(ELogLevel.Info)) return false;
+				if (!_logMask.HasFlag(ELogLevel.Info)) return false;
 				HLogger.Log(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
@@ -27,7 +27,7 @@ namespace DragonResonance.Behaviours
 			protected bool Info(string message = "", [CallerMemberName] string callerMember = null) => LogInfo(message, callerMember);
 			protected bool LogInfo(string message = "", [CallerMemberName] string callerMember = null)
 			{
-				if (!_loggingMask.HasFlag(ELogLevel.Info)) return false;
+				if (!_logMask.HasFlag(ELogLevel.Info)) return false;
 				HLogger.LogInfo(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
@@ -35,7 +35,7 @@ namespace DragonResonance.Behaviours
 			protected bool Emphasis(string message = "", [CallerMemberName] string callerMember = null) => LogEmphasis(message, callerMember);
 			protected bool LogEmphasis(string message = "", [CallerMemberName] string callerMember = null)
 			{
-				if (!_loggingMask.HasFlag(ELogLevel.Emphasis)) return false;
+				if (!_logMask.HasFlag(ELogLevel.Emphasis)) return false;
 				HLogger.LogEmphasis(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
@@ -43,7 +43,7 @@ namespace DragonResonance.Behaviours
 			protected bool Warning(string message = "", [CallerMemberName] string callerMember = null) => LogWarning(message, callerMember);
 			protected bool LogWarning(string message = "", [CallerMemberName] string callerMember = null)
 			{
-				if (!_loggingMask.HasFlag(ELogLevel.Warning)) return false;
+				if (!_logMask.HasFlag(ELogLevel.Warning)) return false;
 				HLogger.LogWarning(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
@@ -51,7 +51,7 @@ namespace DragonResonance.Behaviours
 			protected bool Error(string message = "", [CallerMemberName] string callerMember = null) => LogError(message, callerMember);
 			protected bool LogError(string message = "", [CallerMemberName] string callerMember = null)
 			{
-				if (!_loggingMask.HasFlag(ELogLevel.Error)) return false;
+				if (!_logMask.HasFlag(ELogLevel.Error)) return false;
 				HLogger.LogError(message, $"{this.name}::{callerMember}", this);
 				return true;
 			}
@@ -59,17 +59,10 @@ namespace DragonResonance.Behaviours
 			protected bool Exception(Exception exception, [CallerMemberName] string callerMember = null) => LogException(exception, callerMember);
 			protected bool LogException(Exception exception, [CallerMemberName] string callerMember = null)
 			{
-				if (!_loggingMask.HasFlag(ELogLevel.Exception)) return false;
+				if (!_logMask.HasFlag(ELogLevel.Exception)) return false;
 				HLogger.LogException(exception, $"{this.name}::{callerMember}", this);
 				return true;
 			}
-
-		#endregion
-
-
-		#region Properties
-
-			protected ELogLevel LoggingMask => _loggingMask;
 
 		#endregion
 	}

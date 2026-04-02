@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace DragonResonance.Debugging
 {
-	public class SystemSpecs : PossumBehaviour
+	public class DeviceSpecs : PossumBehaviour
 	{
 		[SerializeField] private UnityEvent<string> _targets = null;
 
@@ -49,7 +49,7 @@ namespace DragonResonance.Debugging
 				_toStringOutput.AppendLine($"GPUModel:   {SystemInfo.graphicsDeviceVendor} {SystemInfo.graphicsDeviceName}");
 				_toStringOutput.AppendLine($"GPUVersion: {SystemInfo.graphicsDeviceVersion}");
 				_toStringOutput.AppendLine($"GPUMemSize: {SystemInfo.graphicsMemorySize}");
-				_toStringOutput.AppendLine($"GPUShdrLvl: {SystemInfo.graphicsShaderLevel}");
+				_toStringOutput.Append(    $"GPUShdrLvl: {SystemInfo.graphicsShaderLevel}");
 
 				return _toStringOutput.ToString();
 			}
