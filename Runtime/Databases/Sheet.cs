@@ -71,6 +71,8 @@ namespace PossumScream.Databases
 
 		#region Properties
 
+			public List<List<T>> Data => _data;
+
 			public int ColumnCount => _data.Max(row => row.Count);
 			public int RowCount => _data.Count;
 

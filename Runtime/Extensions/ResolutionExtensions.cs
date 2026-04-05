@@ -1,43 +1,14 @@
-#if UNITY_EDITOR
+using UnityEngine;
 
 
-namespace DragonResonance.Editor.Building
+namespace DragonResonance.Extensions
 {
-	public partial class BuildDefines // Definitions
+	public static class ResolutionExtensions
 	{
-		private static readonly string[] DemonstrationValidDefinitions = {
-			/* 0 */ "_DEMO_BUILD", // Default
-			/* 1 */ "DEMO_BUILD",
-		};
-
-		private static readonly string[] LoggingValidDefinitions = {
-			/* 0 */ "ENABLE_LOGGING", // Default
-			/* 1 */ "_ENABLE_LOGGING",
-		};
-
-		private static readonly string[] ContexterIntegrationValidDefinitions = {
-			/* 0 */ "_ENABLE_CONTEXTER", // Default
-			/* 1 */ "ENABLE_CONTEXTER",
-		};
-
-		#if STEAMWORKS_INTEGRATION
-		private static readonly string[] SteamworksIntegrationValidDefinitions = {
-			/* 0 */ "_DISABLESTEAMWORKS", // Default
-			/* 1 */ "DISABLESTEAMWORKS",
-		};
-		#endif
-
-		#if EOS_INTEGRATION
-		private static readonly string[] EOSIntegrationValidDefinitions = {
-			/* 0 */ "_EOS_DISABLE", // Default
-			/* 1 */ "EOS_DISABLE",
-		};
-		#endif
+		public static string ToStringPretty(this Resolution resolution) =>
+			$"{resolution.width} × {resolution.height} @ {resolution.refreshRateRatio.value:0.00}Hz";
 	}
 }
-
-
-#endif
 
 
 /*       ________________________________________________________________       */

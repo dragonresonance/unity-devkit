@@ -1,34 +1,12 @@
-using UnityEngine;
-
-
-namespace PossumScream.Databases
+namespace DragonResonance.Logging
 {
-	public partial class DynamicSheet<T> // TSV Handler
+	public enum ELogSeverity
 	{
-		#region Publics
-
-			public bool TryImportTSV(TextAsset textAsset, string separator = "\t", string delimiter = "'", Formatting formatting = null)
-			{
-				return TryImportCSV(textAsset, separator, delimiter, formatting);
-			}
-
-			public bool TryImportTSV(string content, string separator = "\t", string delimiter = "'", Formatting formatting = null)
-			{
-				return TryImportCSV(content, separator, delimiter, formatting);
-			}
-
-
-			public bool TryJoinTSV(TextAsset textAsset, string separator = "\t", string delimiter = "'", Formatting formatting = null)
-			{
-				return TryJoinCSV(textAsset, separator, delimiter, formatting);
-			}
-
-			public bool TryJoinTSV(string content, string separator = "\t", string delimiter = "'", Formatting formatting = null)
-			{
-				return TryJoinCSV(content, separator, delimiter, formatting);
-			}
-
-		#endregion
+		INFO = 0xfafafa,
+		EMPH = 0x64c8fa,
+		WARN = 0xfac864,
+		ERR  = 0xfa6464,
+		EXC  = 0xc864fa,
 	}
 }
 
