@@ -47,6 +47,16 @@ namespace DragonResonance.Logging
 				Console.Error.WriteLine(FormatForConsole(message, ELogSeverity.ERR, callerName, callerFile));
 			}
 
+
+			[Conditional("ENABLE_LOGGING")]
+			public static void Exception(Exception exception, string message = "", UnityObject context = null, [CallerMemberName] string callerName = null, [CallerFilePath] string callerPath = null)
+			{
+				string callerFile = GetFileName(callerPath);
+				Debug.LogError(FormatForDebug(message, ELogSeverity.EXC, callerName, callerFile), context);
+				Debug.LogException(exception, context);
+				Console.Error.WriteLine(FormatForConsole(message, ELogSeverity.EXC, callerName, callerFile));
+			}
+
 		#endregion
 
 

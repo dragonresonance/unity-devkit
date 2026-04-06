@@ -1,3 +1,4 @@
+using DragonResonance.Logging;
 using UnityEngine;
 
 
@@ -22,8 +23,12 @@ namespace DragonResonance.Behaviours
 
 			public static T GetInstance()
 			{
-				if ((_instance == null) && (FindAnyObjectByType(typeof(T)) is SingletonScriptableObject<T> instance))
-					instance.AssessInstance();
+				if (_instance == null) {
+					T[] assets = Resources.LoadAll<T>(null);
+					foreach (T asset in assets)
+						if (asset is SingletonScriptableObject<T> instance)
+							instance.AssessInstance();
+				}
 
 				return _instance;
 			}
@@ -38,7 +43,7 @@ namespace DragonResonance.Behaviours
 				if (_instance == null)
 					_instance = this as T;
 				else if (_instance != this)
-					Debug.LogError($"This instance ({base.name}) is inaccessible as Instance");
+					Log.Error($"This instance ({base.name}) is inaccessible as Instance");
 			}
 
 		#endregion
