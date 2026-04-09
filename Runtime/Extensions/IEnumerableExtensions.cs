@@ -16,13 +16,28 @@ namespace DragonResonance.Extensions
 			public static int LastIndex<T>(this IEnumerable<T> enumerable) => (enumerable.Count() - 1);
 
 
+			public static T FirstMatch<T>(this IEnumerable<T> contentEnumerable, IEnumerable<T> containerEnumerable)
+			{
+				HashSet<T> containerSet = containerEnumerable.ToHashSet();
+				return contentEnumerable.FirstOrDefault(item => containerSet.Contains(item));
+			}
+
+			public static T FirstMatchOrFallback<T>(this IEnumerable<T> contentEnumerable, IEnumerable<T> containerEnumerable, T fallback)
+			{
+				HashSet<T> container = containerEnumerable.ToHashSet();
+				foreach (T item in contentEnumerable)
+					if (container.Contains(item))
+						return item;
+
+				return fallback;
+			}
+
 			public static bool MatchesAny<T>(this IEnumerable<T> enumerableA, IEnumerable<T> enumerableB)
 			{
 				T[] arrayA = enumerableA.ToArray();
 				T[] arrayB = enumerableB.ToArray();
 				return arrayB.Any(bValue => arrayA.Contains(bValue));
 			}
-
 
 			public static int Matches<T>(this IEnumerable<T> enumerableA, IEnumerable<T> enumerableB)
 			{
