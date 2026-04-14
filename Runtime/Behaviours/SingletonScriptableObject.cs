@@ -24,7 +24,7 @@ namespace DragonResonance.Behaviours
 			public static T GetInstance()
 			{
 				if (_instance == null) {
-					T[] assets = Resources.LoadAll<T>(null);
+					T[] assets = Resources.LoadAll<T>(string.Empty);
 					foreach (T asset in assets)
 						if (asset is SingletonScriptableObject<T> instance)
 							instance.AssessInstance();
