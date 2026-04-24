@@ -3,9 +3,10 @@
 ![Logo](./Logo.png)
 
 A Unity extension package that enhances the development workflow with improved behaviours, extensions, utilities, useful constants, and other quality-of-life tools.
-> I develop, maintain and use this package for my own projects, so it’s continuously dogfooded in real-world development and updated frequently.
 
 ![Alt](https://repobeats.axiom.co/api/embed/2c819871c7ba5bab53e0b2e1d32e5c5289206686.svg "Repobeats analytics image")
+
+> I develop, maintain, and use this package for my own projects, so it is continuously tested in real-world development and updated frequently. Minor bugs may occur from time to time.
 
 
 ## Installation
