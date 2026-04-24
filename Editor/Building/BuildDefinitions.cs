@@ -38,6 +38,7 @@ namespace DragonResonance.Editor.Building
 						ReplenishDefinitions(DemonstrationValidDefinitions);
 						ReplenishDefinitions(LoggingValidDefinitions);
 						ReplenishDefinitions(ContexterIntegrationValidDefinitions);
+						ReplenishDefinitions(BuildPropertiesIntegrationValidDefinitions);
 
 						#if STEAMWORKS_INTEGRATION
 							ReplenishDefinitions(SteamworksIntegrationValidDefinitions);

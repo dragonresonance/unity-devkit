@@ -1,8 +1,8 @@
-#if UNITY_EDITOR && ENABLE_CONTEXTER
+#if UNITY_EDITOR && OUTPUT_BUILD_PROPERTIES
 
 
 using DragonResonance.Logging;
-using System.Diagnostics;
+using System.IO;
 using System;
 using UnityEditor.Build.Reporting;
 using UnityEditor.Build;
@@ -12,8 +12,10 @@ using UnityEngine;
 
 namespace DragonResonance.Editor.Building
 {
-	public class ContexterStamper : IPreprocessBuildWithReport
+	public class BuildPropertiesStamper : IPreprocessBuildWithReport
 	{
+		private const string OUTPUT_PATH         = "./build.properties";
+
 		private const string APP_NAME_KEY        = "application_name";
 		private const string APP_VERSION_KEY     = "application_version";
 		private const string BUILD_DATETIME_KEY  = "build_datetime";
@@ -33,55 +35,27 @@ namespace DragonResonance.Editor.Building
 		#region Publics
 
 			public static string GetFormattedTimestampDatetime() => $"{DateTimeOffset.UtcNow:yyMMddHHmmss}";
+			public static string GetFormattedLine(string key, string value) => $"{key}={value}";
 
 
-			[MenuItem("Tools/Dragon Resonance/Building/Stamp Contexter Data")]
+			[MenuItem("Tools/Dragon Resonance/Building/Stamp Build Properties")]
 			public static void StampBuildingData()
 			{
-				Log.Info($"Setting Contexter data...");
+				Log.Info($"Stamping data to {OUTPUT_PATH}...");
 				{
-					ExecuteContexterSetter(APP_NAME_KEY, Application.productName);
-					ExecuteContexterSetter(APP_VERSION_KEY, Application.version);
-					ExecuteContexterSetter(BUILD_DATETIME_KEY, $"{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}");
-					ExecuteContexterSetter(BUILD_TIMESTAMP_KEY, GetFormattedTimestampDatetime());
-					ExecuteContexterSetter(COMPANY_NAME_KEY, Application.companyName);
-					ExecuteContexterSetter(ENGINE_NAME_KEY, "Unity");
-					ExecuteContexterSetter(ENGINE_VERSION_KEY, Application.unityVersion);
+					Directory.CreateDirectory(Path.GetDirectoryName(OUTPUT_PATH)!);
+					File.WriteAllLines(OUTPUT_PATH, new[] {
+						GetFormattedLine(APP_NAME_KEY, Application.productName),
+						GetFormattedLine(APP_VERSION_KEY, Application.version),
+						GetFormattedLine(BUILD_DATETIME_KEY, $"{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}"),
+						GetFormattedLine(BUILD_TIMESTAMP_KEY, GetFormattedTimestampDatetime()),
+						GetFormattedLine(COMPANY_NAME_KEY, Application.companyName),
+						GetFormattedLine(ENGINE_NAME_KEY, "Unity"),
+						GetFormattedLine(ENGINE_VERSION_KEY, Application.unityVersion),
+					});
 				}
 				Log.Info($"Done!");
 			}
-
-		#endregion
-
-
-		#region Privates
-
-
-			private static void ExecuteContexterSetter(string key, string value)
-			{
-				ExecuteContexterCommand(new [] {
-					"SET", $"\"{key}\"", $"\"{value}\""
-				});
-			}
-
-
-			private static void ExecuteContexterCommand(string[] command)
-			{
-				Process contexter = new();
-
-				contexter.StartInfo.FileName = "contexter";
-				contexter.StartInfo.Arguments = string.Join(" ", command);
-
-				contexter.StartInfo.CreateNoWindow = true;
-				//contexter.StartInfo.RedirectStandardOutput = true;
-				contexter.StartInfo.UseShellExecute = false;
-
-				contexter.Start();
-				contexter.WaitForExit();
-
-				//HLogger.Log(contexter.StandardOutput.ReadToEnd());
-			}
-
 
 		#endregion
 

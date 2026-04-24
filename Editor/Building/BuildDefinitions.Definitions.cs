@@ -20,6 +20,11 @@ namespace DragonResonance.Editor.Building
 			/* 1 */ "ENABLE_CONTEXTER",
 		};
 
+		private static readonly string[] BuildPropertiesIntegrationValidDefinitions = {
+			/* 0 */ "OUTPUT_BUILD_PROPERTIES", // Default
+			/* 1 */ "_OUTPUT_BUILD_PROPERTIES",
+		};
+
 		#if STEAMWORKS_INTEGRATION
 		private static readonly string[] SteamworksIntegrationValidDefinitions = {
 			/* 0 */ "_DISABLESTEAMWORKS", // Default

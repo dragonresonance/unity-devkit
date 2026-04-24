@@ -14,51 +14,39 @@ namespace DragonResonance.Behaviours
 
 		#region Inheritables
 
-			protected bool Log(string message = "", [CallerMemberName] string callerMember = null)
+			protected void Log(string message, [CallerMemberName] string callerName = null) => Log(message, this, callerName);
+			protected void Log(string message, UnityObject context, [CallerMemberName] string callerName = null)
 			{
-				if (!_logMask.HasFlag(ELogLevel.Info)) return false;
-				HLogger.Log(message, $"{this.name}::{callerMember}", this);
-				return true;
+				if (!_logMask.HasFlag(ELogLevel.Info)) return;
+				Logging.Log.Info(message, context, callerName);
 			}
 
-			protected bool Info(string message = "", [CallerMemberName] string callerMember = null) => LogInfo(message, callerMember);
-			protected bool LogInfo(string message = "", [CallerMemberName] string callerMember = null)
+			protected void Emphasis(string message, [CallerMemberName] string callerName = null) => Emphasis(message, this, callerName);
+			protected void Emphasis(string message, UnityObject context, [CallerMemberName] string callerName = null)
 			{
-				if (!_logMask.HasFlag(ELogLevel.Info)) return false;
-				HLogger.LogInfo(message, $"{this.name}::{callerMember}", this);
-				return true;
+				if (!_logMask.HasFlag(ELogLevel.Emphasis)) return;
+				Logging.Log.Emphasis(message, context, callerName);
 			}
 
-			protected bool Emphasis(string message = "", [CallerMemberName] string callerMember = null) => LogEmphasis(message, callerMember);
-			protected bool LogEmphasis(string message = "", [CallerMemberName] string callerMember = null)
+			protected void Warning(string message, [CallerMemberName] string callerName = null) => Warning(message, this, callerName);
+			protected void Warning(string message, UnityObject context, [CallerMemberName] string callerName = null)
 			{
-				if (!_logMask.HasFlag(ELogLevel.Emphasis)) return false;
-				HLogger.LogEmphasis(message, $"{this.name}::{callerMember}", this);
-				return true;
+				if (!_logMask.HasFlag(ELogLevel.Warning)) return;
+				Logging.Log.Warning(message, context, callerName);
 			}
 
-			protected bool Warning(string message = "", [CallerMemberName] string callerMember = null) => LogWarning(message, callerMember);
-			protected bool LogWarning(string message = "", [CallerMemberName] string callerMember = null)
+			protected void Error(string message, [CallerMemberName] string callerName = null) => Error(message, this, callerName);
+			protected void Error(string message, UnityObject context, [CallerMemberName] string callerName = null)
 			{
-				if (!_logMask.HasFlag(ELogLevel.Warning)) return false;
-				HLogger.LogWarning(message, $"{this.name}::{callerMember}", this);
-				return true;
+				if (!_logMask.HasFlag(ELogLevel.Error)) return;
+				Logging.Log.Error(message, context, callerName);
 			}
 
-			protected bool Error(string message = "", [CallerMemberName] string callerMember = null) => LogError(message, callerMember);
-			protected bool LogError(string message = "", [CallerMemberName] string callerMember = null)
+			protected void Exception(Exception exception, string message, [CallerMemberName] string callerName = null) => Exception(exception, message, this, callerName);
+			protected void Exception(Exception exception, string message, UnityObject context, [CallerMemberName] string callerName = null)
 			{
-				if (!_logMask.HasFlag(ELogLevel.Error)) return false;
-				HLogger.LogError(message, $"{this.name}::{callerMember}", this);
-				return true;
-			}
-
-			protected bool Exception(Exception exception, [CallerMemberName] string callerMember = null) => LogException(exception, callerMember);
-			protected bool LogException(Exception exception, [CallerMemberName] string callerMember = null)
-			{
-				if (!_logMask.HasFlag(ELogLevel.Exception)) return false;
-				HLogger.LogException(exception, $"{this.name}::{callerMember}", this);
-				return true;
+				if (!_logMask.HasFlag(ELogLevel.Exception)) return;
+				Logging.Log.Exception(exception, message, context, callerName);
 			}
 
 		#endregion
