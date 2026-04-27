@@ -20,7 +20,8 @@ namespace DragonResonance.Miscellany
 
 			private void Awake()
 			{
-				AddDefinitions();
+				AddUnityDefinitions();
+				AddDevkitDefinitions();
 				if (_whitelistMode == _definedDefinitions.MatchesAny(_definitions))
 					PerformingAction.Invoke(this.gameObject);
 			}
@@ -32,7 +33,17 @@ namespace DragonResonance.Miscellany
 
 			protected virtual Action<GameObject> PerformingAction => Destroy;
 
-			private void AddDefinitions()
+			private void AddDevkitDefinitions()
+			{
+				#if DEMO_BUILD
+					_definedDefinitions.Add("DEMO_BUILD");
+				#endif
+				#if ENABLE_LOGGING
+					_definedDefinitions.Add("ENABLE_LOGGING");
+				#endif
+			}
+
+			private void AddUnityDefinitions()
 			{
 				#if CSHARP_7_3_OR_NEWER
 					_definedDefinitions.Add("CSHARP_7_3_OR_NEWER");
