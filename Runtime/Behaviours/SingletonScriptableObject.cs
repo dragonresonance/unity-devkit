@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DragonResonance.Logging;
 using UnityEngine;
 
@@ -19,17 +20,11 @@ namespace DragonResonance.Behaviours
 
 		#region Publics
 
-			public static bool TryGetInstance(out T instance) => ((instance = GetInstance()) != null);
+			public static bool TryGetInstance(out T instance) => ((instance = _instance) != null);
 
-			public static T GetInstance()
+			public static async UniTask<T> GetInstanceAsync()
 			{
-				if (_instance == null) {
-					T[] assets = Resources.LoadAll<T>(string.Empty);
-					foreach (T asset in assets)
-						if (asset is SingletonScriptableObject<T> instance)
-							instance.AssessInstance();
-				}
-
+				await UniTask.WaitUntil(() => (_instance != null));
 				return _instance;
 			}
 
@@ -52,7 +47,6 @@ namespace DragonResonance.Behaviours
 		#region Properties
 
 			public static T CachedInstance => _instance;
-			public static T Instance => GetInstance();
 
 		#endregion
 	}

@@ -2,6 +2,7 @@
     "name": "DragonResonance.DevKit",
     "rootNamespace": "DragonResonance",
     "references": [
+        "UniTask",
         "Unity.InputSystem",
         "Unity.Netcode.Runtime",
         "Unity.TextMeshPro"
@@ -35,9 +36,9 @@
             "define": "STEAMWORKS_INTEGRATION"
         },
         {
-            "name": "com.playeveryware.eos",
+            "name": "com.cysharp.unitask",
             "expression": "",
-            "define": "EOS_INTEGRATION"
+            "define": "UNITASK"
         }
     ],
     "noEngineReferences": false
