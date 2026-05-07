@@ -1,23 +1,15 @@
 #if UNITY_EDITOR
 
 
-using PossumScream.Constants;
-using PossumScream.Editor.Editors;
+using DragonResonance.Miscellany;
 using PossumScream.Mathematics;
-using UnityEditor;
 using UnityEngine;
 
 
 
 
-namespace PossumScream.Editor.Debugging
+namespace DragonResonance.Editor.Debugging
 {
-	[CustomEditor(typeof(GizmoDrawer))]
-	public class GizmoDrawEditor : ScriptlessEditor { }
-
-
-
-
 	[RequireComponent(typeof(Transform))]
 	public class GizmoDrawer : MonoBehaviour
 	{

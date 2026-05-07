@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 
 
-namespace PossumScream.Editor.Editors
+namespace DragonResonance.Editor.GUI
 {
 	public class ScriptlessEditor : UnityEditor.Editor
 	{
@@ -10,9 +10,7 @@ namespace PossumScream.Editor.Editors
 		public override void OnInspectorGUI()
 		{
 			base.serializedObject.Update();
-			{
-				DrawPropertiesExcluding(base.serializedObject, this._excludedFields);
-			}
+			DrawPropertiesExcluding(base.serializedObject, this._excludedFields);
 			base.serializedObject.ApplyModifiedProperties();
 		}
 	}

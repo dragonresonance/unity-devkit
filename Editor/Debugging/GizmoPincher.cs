@@ -1,23 +1,12 @@
-using PossumScream.Constants;
+#if UNITY_EDITOR
+
+
+using DragonResonance.Miscellany;
 using UnityEngine;
 
-#if UNITY_EDITOR_
-using PossumScream.Editor.Editors;
-using UnityEditor;
-#endif
 
-
-
-namespace PossumScream.Editor.Debugging
+namespace DragonResonance.Editor.Debugging
 {
-	#if UNITY_EDITOR_
-	[CustomEditor(typeof(GizmoPincher))]
-	public class GizmoPincherEditor : ScriptlessEditor { }
-	#endif
-
-
-
-
 	[RequireComponent(typeof(Transform))]
 	public class GizmoPincher : MonoBehaviour
 	{
@@ -29,12 +18,8 @@ namespace PossumScream.Editor.Debugging
 		[SerializeField] private Rigidbody[] _bodies = {};
 
 
-
-
 		#region Events
 
-
-			#if UNITY_EDITOR
 			private void FixedUpdate()
 			{
 				foreach (Rigidbody body in this._bodies) {
@@ -42,27 +27,22 @@ namespace PossumScream.Editor.Debugging
 					body.AddForce((forceVector * this._forceFactor), this._forceMode);
 				}
 			}
-			#endif
 
-
-			#if UNITY_EDITOR
 			private void OnDrawGizmos()
 			{
 				if (!_visible) return;
 
 				Gizmos.color = this._lineColor;
-				foreach (Rigidbody body in this._bodies) {
+				foreach (Rigidbody body in this._bodies)
 					Gizmos.DrawLine(body.transform.position, base.transform.position);
-				}
 			}
-			#endif
-
 
 		#endregion
 	}
 }
 
 
+#endif
 
 
 /*       ________________________________________________________________       */

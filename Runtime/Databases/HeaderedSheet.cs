@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace PossumScream.Databases
+namespace DragonResonance.Databases
 {
 	public class HeaderedSheet<T> : Sheet<T>
 	{
