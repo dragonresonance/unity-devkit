@@ -12,12 +12,8 @@ using UnityEditor;
 namespace DragonResonance.Editor.Building
 {
 	[InitializeOnLoad]
-	public partial class BuildDefines
+	public static partial class BuildDefines
 	{
-		private const char DEFINITIONS_SEPARATOR = ';';
-		private static readonly List<string> _currentDefinitions = new();
-
-
 		#region Constructors
 
 			static BuildDefines() => OrganizeBuildDefinitions();
@@ -30,15 +26,13 @@ namespace DragonResonance.Editor.Building
 			[MenuItem("Tools/Dragon Resonance/Building/Organize Build Definitions")]
 			public static void OrganizeBuildDefinitions()
 			{
-				HLogger.Log("Organizing Build Definitions...", typeof(BuildDefines));
+				Log.Info("Organizing Build Definitions...");
 				{
-					_currentDefinitions.Clear();
-					_currentDefinitions.AddRange(BuildDefines.CurrentDefinitions);
+					List<string> definitions = new(BuildDefines.CurrentDefinitions);
 					{
-						ReplenishDefinitions(DemonstrationValidDefinitions);
-						ReplenishDefinitions(LoggingValidDefinitions);
-						ReplenishDefinitions(ContexterIntegrationValidDefinitions);
-						ReplenishDefinitions(BuildPropertiesIntegrationValidDefinitions);
+						ReplenishDefinitions(definitions, DemonstrationValidDefinitions);
+						ReplenishDefinitions(definitions, LoggingValidDefinitions);
+						ReplenishDefinitions(definitions, BuildPropertiesIntegrationValidDefinitions);
 
 						#if STEAMWORKS_INTEGRATION
 							ReplenishDefinitions(SteamworksIntegrationValidDefinitions);
@@ -47,15 +41,37 @@ namespace DragonResonance.Editor.Building
 							ReplenishDefinitions(EOSIntegrationValidDefinitions);
 						#endif
 					}
-					ApplyDefinitions(new SortedSet<string>(_currentDefinitions));
+					ApplyDefinitions(new SortedSet<string>(definitions));
 				}
-				HLogger.Log("Done!", typeof(BuildDefines));
+				Log.Info($"Done!");
+			}
+
+			public static void ToggleBuildDefinition(string definition)
+			{
+				definition = definition.Trim();
+				if (string.IsNullOrEmpty(definition)) return;
+
+				List<string> definitions = new(BuildDefines.CurrentDefinitions);
+				{
+					if (definitions.Contains(definition)) {
+						definitions.Remove(definition);
+						definitions.AddOrIgnore(FormatToggledDefinition(definition));
+					}
+					else {
+						definitions.Remove(FormatToggledDefinition(definition));
+						definitions.AddOrIgnore(definition);
+					}
+				}
+				ApplyDefinitions(definitions);
 			}
 
 		#endregion
 
 
 		#region Privates
+
+			private static string FormatToggledDefinition(string definition) =>
+				definition.StartsWith('_') ? definition.TrimStart('_') : $"_{definition}";
 
 			private static void ApplyDefinitions(IEnumerable<string> definitions)
 			{
@@ -64,12 +80,12 @@ namespace DragonResonance.Editor.Building
 					definitions.ToArray());
 			}
 
-			private static void ReplenishDefinitions(IReadOnlyList<string> definitions, int fallbackIndex = 0)
+			private static void ReplenishDefinitions(List<string> list, IReadOnlyList<string> definitions, int fallbackIndex = 0)
 			{
 				if (definitions.Count == 0) return;
-				int validSetDefinitionIndex = definitions.IndexOf(_currentDefinitions);
-				_currentDefinitions.RemoveAll(definitions.Contains);
-				_currentDefinitions.Add((validSetDefinitionIndex != -1) ?
+				int validSetDefinitionIndex = definitions.IndexOf(list);
+				list.RemoveAll(definitions.Contains);
+				list.Add((validSetDefinitionIndex != -1) ?
 					definitions[validSetDefinitionIndex] :
 					definitions[fallbackIndex]);
 			}
@@ -81,7 +97,7 @@ namespace DragonResonance.Editor.Building
 
 			public static IEnumerable<string> CurrentDefinitions => PlayerSettings
 				.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup))
-				.Split(DEFINITIONS_SEPARATOR);
+				.Split(';');
 
 		#endregion
 	}

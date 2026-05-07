@@ -1,43 +1,26 @@
 #if UNITY_EDITOR
 
 
+using UnityEditor;
+
+
 namespace DragonResonance.Editor.Building
 {
-	public partial class BuildDefines // Definitions
+	public static class DemoBuildToggler
 	{
-		private static readonly string[] DemonstrationValidDefinitions = {
-			/* 0 */ "_DEMO_BUILD", // Default
-			/* 1 */ "DEMO_BUILD",
-		};
+		private const string DEMO_BUILD_DEFINE = "DEMO_BUILD";
 
-		private static readonly string[] LoggingValidDefinitions = {
-			/* 0 */ "ENABLE_LOGGING", // Default
-			/* 1 */ "_ENABLE_LOGGING",
-		};
 
-		private static readonly string[] ContexterIntegrationValidDefinitions = {
-			/* 0 */ "_ENABLE_CONTEXTER", // Default
-			/* 1 */ "ENABLE_CONTEXTER",
-		};
+		#region Publics
 
-		private static readonly string[] BuildPropertiesIntegrationValidDefinitions = {
-			/* 0 */ "OUTPUT_BUILD_PROPERTIES", // Default
-			/* 1 */ "_OUTPUT_BUILD_PROPERTIES",
-		};
+			#if DEMO_BUILD
+				[MenuItem("DEMO MODE/Switch to Release")]
+			#else
+				[MenuItem("RELEASE MODE/Switch to Demo")]
+			#endif
+			public static void SwitchDemoMode() => BuildDefines.ToggleBuildDefinition(DEMO_BUILD_DEFINE);
 
-		#if STEAMWORKS_INTEGRATION
-		private static readonly string[] SteamworksIntegrationValidDefinitions = {
-			/* 0 */ "_DISABLESTEAMWORKS", // Default
-			/* 1 */ "DISABLESTEAMWORKS",
-		};
-		#endif
-
-		#if EOS_INTEGRATION
-		private static readonly string[] EOSIntegrationValidDefinitions = {
-			/* 0 */ "_EOS_DISABLE", // Default
-			/* 1 */ "EOS_DISABLE",
-		};
-		#endif
+		#endregion
 	}
 }
 
