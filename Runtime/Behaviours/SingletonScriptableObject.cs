@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using DragonResonance.Logging;
 using UnityEngine;
 
@@ -22,9 +21,10 @@ namespace DragonResonance.Behaviours
 
 			public static bool TryGetInstance(out T instance) => ((instance = _instance) != null);
 
-			public static async UniTask<T> GetInstanceAsync()
+			public static async Awaitable<T> GetInstanceAsync()
 			{
-				await UniTask.WaitUntil(() => (_instance != null));
+				while (_instance == null)
+					await Awaitable.EndOfFrameAsync();
 				return _instance;
 			}
 
