@@ -9,7 +9,6 @@ namespace DragonResonance.Databases
 		#region Constructors
 
 			public HeaderedSheet() { }
-
 			public HeaderedSheet(List<List<T>> data) : base(data) { }
 
 		#endregion

@@ -10,14 +10,14 @@ namespace DragonResonance.Databases
 	{
 		#region Publics
 
-			public void ImportTSV(string content, string separator = "\t", string delimiter = "\'") => ImportCSV(content, separator, delimiter);
+			public void ImportTSV(string content, string separator = "\t", string delimiter = "\"") => ImportCSV(content, separator, delimiter);
 			public void ImportCSV(string content, string separator = ";", string delimiter = "\"")
 			{
 				Clear();
 				JoinCSV(content, separator, delimiter);
 			}
 
-			public void JoinTSV(string content, string separator = "\t", string delimiter = "\'") => JoinCSV(content, separator, delimiter);
+			public void JoinTSV(string content, string separator = "\t", string delimiter = "\"") => JoinCSV(content, separator, delimiter);
 			public void JoinCSV(string content, string separator = ";", string delimiter = "\"")
 			{
 				foreach (List<string> row in ParseCSV(content, separator, delimiter))
