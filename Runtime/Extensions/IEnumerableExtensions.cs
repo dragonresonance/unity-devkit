@@ -12,8 +12,23 @@ namespace DragonResonance.Extensions
 		#region Verification
 
 
-			public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
-			public static int LastIndex<T>(this IEnumerable<T> enumerable) => (enumerable.Count() - 1);
+			public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+			{
+				return enumerable switch {
+					ICollection<T> collection => (collection.Count == 0),
+					IReadOnlyCollection<T> readOnly => (readOnly.Count == 0),
+					_ => !enumerable.Any()
+				};
+			}
+
+			public static int LastIndex<T>(this IEnumerable<T> enumerable)
+			{
+				return enumerable switch {
+					ICollection<T> collection => (collection.Count - 1),
+					IReadOnlyCollection<T> readOnly => (readOnly.Count - 1),
+					_ => (enumerable.Count() - 1)
+				};
+			}
 
 
 			public static T FirstMatch<T>(this IEnumerable<T> contentEnumerable, IEnumerable<T> containerEnumerable)
