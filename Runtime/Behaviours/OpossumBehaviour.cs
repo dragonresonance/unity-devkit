@@ -12,6 +12,28 @@ namespace DragonResonance.Behaviours
 {
 	public abstract partial class OpossumBehaviour : NetworkBehaviour
 	{
+		#region Publics
+
+			public static void DestroyDynamically(GameObject gameObject)
+			{
+				#if UNITY_EDITOR
+					if (!Application.isPlaying)
+						DestroyImmediate(gameObject);
+					else
+				#endif
+						Destroy(gameObject);
+			}
+
+			public static void DestroyChildren(Transform container)
+			{
+				for (int childIndex = container.childCount - 1; childIndex >= 0; childIndex--) {
+					DestroyDynamically(container.GetChild(childIndex).gameObject);
+				}
+			}
+
+		#endregion
+
+
 		#region Privates
 
 			protected T GetComponentIfNull<T>(T statement) where T : Component =>
@@ -27,6 +49,8 @@ namespace DragonResonance.Behaviours
 				FindComponentIfNull(statement, (includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude));
 			protected T FindComponentIfNull<T>(T statement, FindObjectsInactive includeInactive) where T : Component =>
 				((statement == null) ? FindAnyObjectByType<T>(includeInactive) : statement);
+
+			protected void DestroyChildren() => DestroyChildren(this.transform);
 
 		#endregion
 
