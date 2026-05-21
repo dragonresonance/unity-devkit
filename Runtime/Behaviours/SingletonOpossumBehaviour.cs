@@ -18,7 +18,12 @@ namespace DragonResonance.Behaviours
 
 		#region Events
 
-			protected void Awake() => AssessInstance();
+			protected void Awake()
+			{
+				AssessInstance();
+				if (this.IsCurrent)
+					LateAwake();
+			}
 
 			public override void OnNetworkSpawn()
 			{
@@ -52,6 +57,8 @@ namespace DragonResonance.Behaviours
 
 		#region Inheritables
 
+			protected virtual void LateAwake() { }
+
 			protected virtual void InvokeInstantiationEvent() => OnInstanced?.Invoke();
 
 			protected virtual void AssessInstance()
@@ -60,7 +67,7 @@ namespace DragonResonance.Behaviours
 					_instance = this as T;
 					InvokeInstantiationEvent();
 				}
-				else if (_instance != this) {
+				else if (!this.IsCurrent) {
 					Destroy(this);
 				}
 			}
@@ -70,6 +77,7 @@ namespace DragonResonance.Behaviours
 
 		#region Properties
 
+			public bool IsCurrent => (this == _instance);
 			public static T Current => _instance;
 			public static T Instance => GetInstance();
 
