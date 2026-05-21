@@ -14,17 +14,17 @@ namespace DragonResonance.Serializables
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			{
-				SerializedProperty keyProp = property.FindPropertyRelative("Key");
-				SerializedProperty valueProp = property.FindPropertyRelative("Value");
+				SerializedProperty keyProperty = property.FindPropertyRelative(nameof(SerializableKeyValuePair<object, object>.Key));
+				SerializedProperty valueProperty = property.FindPropertyRelative(nameof(SerializableKeyValuePair<object, object>.Value));
 
 				position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
 				float halfWidth = position.width / 2f;
-				Rect keyRect = new(position.x, position.y, halfWidth - 2, EditorGUIUtility.singleLineHeight);
-				Rect valueRect = new(position.x + halfWidth + 2, position.y, halfWidth - 2, EditorGUIUtility.singleLineHeight);
+				Rect keyPropertyRect = new(position.x, position.y, halfWidth - 2, EditorGUIUtility.singleLineHeight);
+				Rect valuePropertyRect = new(position.x + halfWidth + 2, position.y, halfWidth - 2, EditorGUIUtility.singleLineHeight);
 
-				EditorGUI.PropertyField(keyRect, keyProp, GUIContent.none);
-				EditorGUI.PropertyField(valueRect, valueProp, GUIContent.none);
+				EditorGUI.PropertyField(keyPropertyRect, keyProperty, GUIContent.none);
+				EditorGUI.PropertyField(valuePropertyRect, valueProperty, GUIContent.none);
 			}
 			EditorGUI.EndProperty();
 		}
