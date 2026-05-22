@@ -1,4 +1,5 @@
 using DragonResonance.Logging;
+using System.Threading;
 using UnityEngine;
 
 
@@ -21,10 +22,10 @@ namespace DragonResonance.Behaviours
 
 			public static bool TryGetInstance(out T instance) => ((instance = _instance) != null);
 
-			public static async Awaitable<T> GetInstanceAsync()
+			public static async Awaitable<T> GetInstanceAsync(CancellationToken cancellationToken = default)
 			{
 				while (_instance == null)
-					await Awaitable.EndOfFrameAsync();
+					await Awaitable.EndOfFrameAsync(cancellationToken);
 				return _instance;
 			}
 
