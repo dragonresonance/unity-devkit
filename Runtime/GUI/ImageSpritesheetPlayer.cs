@@ -4,8 +4,6 @@ using UnityEngine.UI;
 using UnityEngine;
 
 
-
-
 namespace DragonResonance.GUI
 {
 	[ExecuteAlways]
@@ -18,35 +16,23 @@ namespace DragonResonance.GUI
 		[SerializeField] private float _speed = 4f;
 		[SerializeField] private Sprite[] _sprites = { };
 
-
 		private Image _image_internal = null;	// Caching only, use the property instead
 		private float _timeOffset = 0f;
 
 
-
-
 		#region Events
 
+			#if UNITY_EDITOR
+			void OnEnable() => UnityEditor.EditorApplication.update += Update;
+			void OnDisable() => UnityEditor.EditorApplication.update -= Update;
+			#endif
 
-			private void Update()
-			{
-				if (!_playing || _sprites.Length.IsZero()) return;
-
-				int spriteIndex = this.CurrentSpriteIndex;
-				this.Image.sprite = _sprites[spriteIndex];
-
-				if ((spriteIndex == _sprites.LastIndex()) && !_loop)
-					Stop();
-			}
-
+			private void Update() => RefreshSprite();
 
 		#endregion
 
 
-
-
 		#region Publics
-
 
 			[ContextMenu(nameof(Play))]
 			public void Play() => _playing = true;
@@ -71,14 +57,30 @@ namespace DragonResonance.GUI
 				Play();
 			}
 
+		#endregion
+
+
+		#region Privates
+
+			private void RefreshSprite()
+			{
+				if (!_playing || _sprites.Length.IsZero()) return;
+
+				int spriteIndex = this.CurrentSpriteIndex;
+				this.Image.sprite = _sprites[spriteIndex];
+
+				if ((spriteIndex == _sprites.LastIndex()) && !_loop)
+					Stop();
+
+				#if UNITY_EDITOR
+				this.Image.Rebuild(CanvasUpdate.PreRender);
+				#endif
+			}
 
 		#endregion
 
 
-
-
 		#region Properties
-
 
 			public float SpriteDuration => (1 / _speed);
 			public float OffsetRealtime => (Time.realtimeSinceStartup - _timeOffset);
@@ -101,11 +103,8 @@ namespace DragonResonance.GUI
 				set => _loop = value;
 			}
 
-
 		#endregion
 	}
-
-
 
 
 	#if UNITY_EDITOR
@@ -137,8 +136,6 @@ namespace DragonResonance.GUI
 	}
 	#endif
 }
-
-
 
 
 /*       ________________________________________________________________       */
