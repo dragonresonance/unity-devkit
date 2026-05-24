@@ -1,5 +1,6 @@
 using DragonResonance.Behaviours;
 using DragonResonance.Extensions;
+using Image = UnityEngine.UI.Image;
 using UnityEngine.UI;
 using UnityEngine;
 
