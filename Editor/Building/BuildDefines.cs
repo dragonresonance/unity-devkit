@@ -35,10 +35,7 @@ namespace DragonResonance.Editor.Building
 						ReplenishDefinitions(definitions, BuildPropertiesIntegrationValidDefinitions);
 
 						#if STEAMWORKS_INTEGRATION
-							ReplenishDefinitions(SteamworksIntegrationValidDefinitions);
-						#endif
-						#if EOS_INTEGRATION
-							ReplenishDefinitions(EOSIntegrationValidDefinitions);
+							ReplenishDefinitions(definitions, SteamworksIntegrationValidDefinitions);
 						#endif
 					}
 					ApplyDefinitions(new SortedSet<string>(definitions));

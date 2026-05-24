@@ -26,13 +26,6 @@ namespace DragonResonance.Editor.Building
 			/* 1 */ "DISABLESTEAMWORKS",
 		};
 		#endif
-
-		#if EOS_INTEGRATION
-		private static readonly string[] EOSIntegrationValidDefinitions = {
-			/* 0 */ "_EOS_DISABLE", // Default
-			/* 1 */ "EOS_DISABLE",
-		};
-		#endif
 	}
 }
 
