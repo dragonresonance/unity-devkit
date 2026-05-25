@@ -7,26 +7,26 @@ using UnityEditor;
 namespace DragonResonance.Editor.Building
 {
 	[InitializeOnLoad]
-	public static class DemoBuildToggler
+	public static class EnableLoggingToggler
 	{
-		private const string DEMO_BUILD_DEFINE = "_DEMO_BUILD";
+		private const string ENABLE_LOGGING_DEFINE = "ENABLE_LOGGING";
 
 
 		#region Constructors
 
-			static DemoBuildToggler() => BuildDefines.SetupBuildDefinition(DEMO_BUILD_DEFINE, false);
+			static EnableLoggingToggler() => BuildDefines.SetupBuildDefinition(ENABLE_LOGGING_DEFINE, false);
 
 		#endregion
 
 
 		#region Publics
 
-			#if DEMO_BUILD
-				[MenuItem("Build/Demo Mode [ON]/Switch to Release")]
+			#if ENABLE_LOGGING
+				[MenuItem("Build/Logging [ON]/Disable logging")]
 			#else
-				[MenuItem("Build/Demo Mode [OFF]/Switch to Demo")]
+				[MenuItem("Build/Logging [OFF]/Enable logging")]
 			#endif
-			public static void SwitchDemoMode() => BuildDefines.ToggleBuildDefinition(DEMO_BUILD_DEFINE);
+			public static void SwitchLogging() => BuildDefines.ToggleBuildDefinition(ENABLE_LOGGING_DEFINE);
 
 		#endregion
 	}
