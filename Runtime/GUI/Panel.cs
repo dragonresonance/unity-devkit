@@ -45,7 +45,7 @@ namespace DragonResonance.GUI
 
 		#region Publics - Visibility
 
-			public virtual Action<CanvasGroup, bool> CanvasGroupVisibilityChangeAction => (canvasGroup, visible) => { canvasGroup.alpha = visible.AsInt(); };
+			public virtual Action<CanvasGroup, bool> VisibilityChangeAction => (canvasGroup, visible) => { canvasGroup.alpha = visible.AsInt(); };
 
 			[ContextMenu(nameof(Toggle))] public void Toggle() => SetVisibility(Mathf.RoundToInt(this.Alpha.Complementary()).AsBool());
 			[ContextMenu(nameof(Show))] public void Show() => SetVisibility(true);
@@ -53,7 +53,7 @@ namespace DragonResonance.GUI
 
 			public void SetVisibility(bool visible)
 			{
-				CanvasGroupVisibilityChangeAction.Invoke(this.CanvasGroup, visible);
+				VisibilityChangeAction.Invoke(this.CanvasGroup, visible);
 				if (_alsoHandleInteractivity)
 					this.CanvasGroup.interactable = this.CanvasGroup.blocksRaycasts = visible;
 				OnVisibilityChange?.Invoke(visible);

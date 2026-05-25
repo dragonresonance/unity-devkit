@@ -1,38 +1,34 @@
 #if UNITY_EDITOR
 
 
+using UnityEditor;
+
+
 namespace DragonResonance.Editor.Building
 {
-	public partial class BuildDefines	// Definitions
+	[InitializeOnLoad]
+	public static class OutputBuildPropertiesToggler
 	{
-		private static readonly string[] DemonstrationValidDefinitions = {
-			/* 0 */ "_DEMO_BUILD", // Default
-			/* 1 */ "DEMO_BUILD",
-		};
+		private const string OUTPUT_BUILD_PROPERTIES_DEFINE = "OUTPUT_BUILD_PROPERTIES";
 
-		private static readonly string[] LoggingValidDefinitions = {
-			/* 0 */ "ENABLE_LOGGING", // Default
-			/* 1 */ "_ENABLE_LOGGING",
-		};
 
-		private static readonly string[] BuildPropertiesIntegrationValidDefinitions = {
-			/* 0 */ "OUTPUT_BUILD_PROPERTIES", // Default
-			/* 1 */ "_OUTPUT_BUILD_PROPERTIES",
-		};
+		#region Constructors
 
-		#if STEAMWORKS_INTEGRATION
-		private static readonly string[] SteamworksIntegrationValidDefinitions = {
-			/* 0 */ "_DISABLESTEAMWORKS", // Default
-			/* 1 */ "DISABLESTEAMWORKS",
-		};
-		#endif
+			static OutputBuildPropertiesToggler() => BuildDefines.SetupBuildDefinition(OUTPUT_BUILD_PROPERTIES_DEFINE, false);
 
-		#if EOS_INTEGRATION
-		private static readonly string[] EOSIntegrationValidDefinitions = {
-			/* 0 */ "_EOS_DISABLE", // Default
-			/* 1 */ "EOS_DISABLE",
-		};
-		#endif
+		#endregion
+
+
+		#region Publics
+
+			#if OUTPUT_BUILD_PROPERTIES
+				[MenuItem("Build/Output Build Properties [ON]/Disable output")]
+			#else
+				[MenuItem("Build/Output Build Properties [OFF]/Enable output")]
+			#endif
+			public static void SwitchLogging() => BuildDefines.ToggleBuildDefinition(OUTPUT_BUILD_PROPERTIES_DEFINE);
+
+		#endregion
 	}
 }
 

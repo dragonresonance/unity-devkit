@@ -28,11 +28,6 @@
             "name": "com.unity.netcode.gameobjects",
             "expression": "",
             "define": "UNITY_NGO"
-        },
-        {
-            "name": "com.rlabrecque.steamworks.net",
-            "expression": "",
-            "define": "STEAMWORKS_INTEGRATION"
         }
     ],
     "noEngineReferences": false

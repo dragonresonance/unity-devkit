@@ -2,9 +2,9 @@
 
 
 using DragonResonance.Extensions;
-using DragonResonance.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEditor.Build;
 using UnityEditor;
 
@@ -12,55 +12,35 @@ using UnityEditor;
 namespace DragonResonance.Editor.Building
 {
 	[InitializeOnLoad]
-	public static partial class BuildDefines
+	public static class BuildDefines
 	{
 		#region Constructors
 
-			static BuildDefines() => OrganizeBuildDefinitions();
+			static BuildDefines() => ApplyDefinitions(new SortedSet<string>(
+				BuildDefines.CurrentDefinitions,
+				Comparer<string>.Create((defineA, defineB) =>
+					string.Compare(defineA.TrimStart('_'), defineB.TrimStart('_'), StringComparison.OrdinalIgnoreCase))));
 
 		#endregion
 
 
 		#region Publics
 
-			[MenuItem("Tools/Dragon Resonance/Building/Organize Build Definitions")]
-			public static void OrganizeBuildDefinitions()
-			{
-				Log.Info("Organizing Build Definitions...");
-				{
-					List<string> definitions = new(BuildDefines.CurrentDefinitions);
-					{
-						ReplenishDefinitions(definitions, DemonstrationValidDefinitions);
-						ReplenishDefinitions(definitions, LoggingValidDefinitions);
-						ReplenishDefinitions(definitions, BuildPropertiesIntegrationValidDefinitions);
+			public static void ToggleBuildDefinition(string definition) =>
+				SetupBuildDefinition(FormatToggledDefinition(definition.Trim()), true);
 
-						#if STEAMWORKS_INTEGRATION
-							ReplenishDefinitions(SteamworksIntegrationValidDefinitions);
-						#endif
-						#if EOS_INTEGRATION
-							ReplenishDefinitions(EOSIntegrationValidDefinitions);
-						#endif
-					}
-					ApplyDefinitions(new SortedSet<string>(definitions));
-				}
-				Log.Info($"Done!");
-			}
-
-			public static void ToggleBuildDefinition(string definition)
+			public static void SetupBuildDefinition(string definition, bool overrideState)
 			{
 				definition = definition.Trim();
 				if (string.IsNullOrEmpty(definition)) return;
 
-				List<string> definitions = new(BuildDefines.CurrentDefinitions);
+				HashSet<string> definitions = new(BuildDefines.CurrentDefinitions);
 				{
-					if (definitions.Contains(definition)) {
-						definitions.Remove(definition);
-						definitions.AddOrIgnore(FormatToggledDefinition(definition));
-					}
-					else {
-						definitions.Remove(FormatToggledDefinition(definition));
+					string toggledDefinition = FormatToggledDefinition(definition);
+					if (overrideState)
+						definitions.Remove(toggledDefinition);
+					if (!definitions.Contains(toggledDefinition))
 						definitions.AddOrIgnore(definition);
-					}
 				}
 				ApplyDefinitions(definitions);
 			}
@@ -78,16 +58,6 @@ namespace DragonResonance.Editor.Building
 				PlayerSettings.SetScriptingDefineSymbols(
 					NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup),
 					definitions.ToArray());
-			}
-
-			private static void ReplenishDefinitions(List<string> list, IReadOnlyList<string> definitions, int fallbackIndex = 0)
-			{
-				if (definitions.Count == 0) return;
-				int validSetDefinitionIndex = definitions.IndexOf(list);
-				list.RemoveAll(definitions.Contains);
-				list.Add((validSetDefinitionIndex != -1) ?
-					definitions[validSetDefinitionIndex] :
-					definitions[fallbackIndex]);
 			}
 
 		#endregion
