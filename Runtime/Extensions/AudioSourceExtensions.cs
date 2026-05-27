@@ -5,7 +5,8 @@ namespace DragonResonance.Extensions
 {
 	public static class AudioSourceExtensions
 	{
-		public static bool IsStopped(this AudioSource target) => (!target.isPlaying && (target.time == 0f));
+		public static bool HasAudioClipStopped(this AudioSource target) => (!target.isPlaying && (target.timeSamples == 0));
+		public static bool HasAudioResourceStopped(this AudioSource target) => !target.isPlaying;
 	}
 }
 
