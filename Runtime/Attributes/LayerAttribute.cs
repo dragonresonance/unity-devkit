@@ -1,33 +1,12 @@
-﻿#if UNITY_EDITOR
+﻿using UnityEngine;
 
 
-using DragonResonance.Attributes;
-using UnityEditor;
-using UnityEngine;
-
-
-namespace DragonResonance.Editor.Attributes
+namespace DragonResonance.Attributes
 {
-	[CustomPropertyDrawer(typeof(TagAttribute))]
-	public class TagAttributeDrawer : PropertyDrawer
-	{
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			if (property.propertyType != SerializedPropertyType.String)
-				EditorGUI.HelpBox(position, $"{nameof(TagAttribute)} works just on strings.", MessageType.Error);
-			else
-				property.stringValue = EditorGUI.TagField(position, label, property.stringValue);
-		}
-	}
+	public class LayerAttribute : PropertyAttribute { }
 }
 
 
-#endif
-
-
-/*                                                                              */
-/*  |>  Based on the script of DMGregory @ Game Development Stack Exchange. <|  */
-/*                                                                              */
 /*       ________________________________________________________________       */
 /*           _________   _______ ________  _______  _______  ___    _           */
 /*           |        \ |______/ |______| |  _____ |       | |  \   |           */

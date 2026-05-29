@@ -8,15 +8,15 @@ using UnityEngine;
 
 namespace DragonResonance.Editor.Attributes
 {
-	[CustomPropertyDrawer(typeof(TagAttribute))]
-	public class TagAttributeDrawer : PropertyDrawer
+	[CustomPropertyDrawer(typeof(LayerAttribute))]
+	public class LayerAttributeDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			if (property.propertyType != SerializedPropertyType.String)
-				EditorGUI.HelpBox(position, $"{nameof(TagAttribute)} works just on strings.", MessageType.Error);
+			if (property.propertyType != SerializedPropertyType.Integer)
+				EditorGUI.HelpBox(position, $"{nameof(LayerAttribute)} works just on integers.", MessageType.Error);
 			else
-				property.stringValue = EditorGUI.TagField(position, label, property.stringValue);
+				property.intValue = EditorGUI.LayerField(position, label, property.intValue);
 		}
 	}
 }
@@ -25,8 +25,6 @@ namespace DragonResonance.Editor.Attributes
 #endif
 
 
-/*                                                                              */
-/*  |>  Based on the script of DMGregory @ Game Development Stack Exchange. <|  */
 /*                                                                              */
 /*       ________________________________________________________________       */
 /*           _________   _______ ________  _______  _______  ___    _           */
