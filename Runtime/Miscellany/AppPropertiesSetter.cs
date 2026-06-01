@@ -33,7 +33,8 @@ namespace DragonResonance.Miscellany
 				return property switch {
 					EAppProperty.ProductName => Application.productName,
 					EAppProperty.CompanyName => Application.companyName,
-					EAppProperty.Version => Application.version,
+					EAppProperty.Version => Version.AppVersionLower,
+					EAppProperty.FullVersion => Version.FullVersionLower,
 					_ => null
 				};
 			}
@@ -48,6 +49,7 @@ namespace DragonResonance.Miscellany
 				ProductName,
 				CompanyName,
 				Version,
+				FullVersion,
 			}
 
 		#endregion

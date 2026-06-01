@@ -8,16 +8,18 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.Build;
 using UnityEditor;
 using UnityEngine;
+using Version = DragonResonance.Miscellany.Version;
 
 
 namespace DragonResonance.Editor.Building
 {
 	public class BuildPropertiesStamper : IPreprocessBuildWithReport
 	{
-		private const string OUTPUT_PATH         = "./build.properties";
+		private const string OUTPUT_FILEPATH     = "./build.properties";
 
 		private const string APP_NAME_KEY        = "application_name";
 		private const string APP_VERSION_KEY     = "application_version";
+		private const string APP_FULLVERSION_KEY = "application_fullversion";
 		private const string BUILD_DATETIME_KEY  = "build_datetime";
 		private const string BUILD_TIMESTAMP_KEY = "build_timestamp";
 		private const string COMPANY_NAME_KEY    = "company_name";
@@ -27,7 +29,12 @@ namespace DragonResonance.Editor.Building
 
 		#region Events
 
-			public void OnPreprocessBuild(BuildReport report) => StampBuildingData();
+			public void OnPreprocessBuild(BuildReport report)
+			{
+				string buildDir = Path.GetDirectoryName(report.summary.outputPath) ?? ".";
+				string stampPath = Path.Combine(buildDir, OUTPUT_FILEPATH);
+				StampBuildingData(stampPath);
+			}
 
 		#endregion
 
@@ -39,14 +46,16 @@ namespace DragonResonance.Editor.Building
 
 
 			[MenuItem("Tools/Dragon Resonance/Building/Stamp Build Properties")]
-			public static void StampBuildingData()
+			public static void StampBuildingData() => StampBuildingData(OUTPUT_FILEPATH);
+			public static void StampBuildingData(string filePath)
 			{
-				Log.Info($"Stamping data to {OUTPUT_PATH}...");
+				Log.Info($"Stamping data to {filePath}...");
 				{
-					Directory.CreateDirectory(Path.GetDirectoryName(OUTPUT_PATH)!);
-					File.WriteAllLines(OUTPUT_PATH, new[] {
+					Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+					File.WriteAllLines(filePath, new[] {
 						GetFormattedLine(APP_NAME_KEY, Application.productName),
-						GetFormattedLine(APP_VERSION_KEY, Application.version),
+						GetFormattedLine(APP_VERSION_KEY, Version.AppVersionLower),
+						GetFormattedLine(APP_FULLVERSION_KEY, Version.FullVersionLower),
 						GetFormattedLine(BUILD_DATETIME_KEY, $"{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}"),
 						GetFormattedLine(BUILD_TIMESTAMP_KEY, GetFormattedTimestampDatetime()),
 						GetFormattedLine(COMPANY_NAME_KEY, Application.companyName),
