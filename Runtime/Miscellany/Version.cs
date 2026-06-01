@@ -5,10 +5,53 @@ namespace DragonResonance.Miscellany
 {
 	public static class Version
 	{
-		#region Properties
+		#region Publics
+
+			public static string WithOS(this string versionString) => $"{versionString}-{AppOS}";
+			public static string WithPlatform(this string versionString) => (AppPlatform != null) ? $"{versionString}-{AppPlatform}" : versionString;
+			public static string WithVariant(this string versionString) => $"{versionString}-{AppVariant}";
+
+		#endregion
+
+
+		#region Properties - Specific
+
+			#if UNITY_STANDALONE_WIN
+				public static string AppOS => "Windows";
+			#elif UNITY_STANDALONE_LINUX
+				public static string AppOS => "Linux";
+			#elif UNITY_STANDALONE_OSX
+				public static string AppOS => "macOS";
+			#endif
+
+			#if STEAMWORKS_INTEGRATION
+				public static string AppPlatform => "Steam";
+			#else
+				public static string AppPlatform => null;
+			#endif
+
+			#if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+				public static string AppVariant => "Beta";
+			#elif DEMO_BUILD
+				public static string AppVariant => "Demo";
+			#else
+				public static string AppVariant => "Release";
+			#endif
+
+		#endregion
+
+
+		#region Properties - General
 
 			public static string AppVersion => Application.version;
+			public static string AppVersionLower => AppVersion.ToLowerInvariant();
 			public static string vAppVersion => $"v{Application.version}";
+			public static string vAppVersionLower => vAppVersion.ToLowerInvariant();
+
+			public static string FullVersion => AppVersion.WithOS().WithPlatform().WithVariant();
+			public static string FullVersionLower => FullVersion.ToLowerInvariant();
+			public static string vFullVersion => vAppVersion.WithOS().WithPlatform().WithVariant();
+			public static string vFullVersionLower => vFullVersion.ToLowerInvariant();
 
 			public static System.Version ToSystemVersion => new(AppVersion);
 
