@@ -7,23 +7,35 @@ namespace DragonResonance.Mathematics
 	{
 		#region Publics - Operations
 
-			public static int TimesDivisible(int dividend, int divisor) => (((dividend / divisor != 0) && (dividend % divisor == 0)) ? (TimesDivisible((dividend / divisor), divisor) + 1) : 0);
+			public static int TimesDivisible(int dividend, int divisor) =>
+				(((dividend / divisor != 0) && (dividend % divisor == 0)) ? (TimesDivisible((dividend / divisor), divisor) + 1) : 0);
+
+			public static float ExponentialDecay(float a, float b, float decay, float deltaTime) =>
+				(b + (a - b) * Mathf.Exp(-decay * deltaTime));
+			public static Vector2 ExponentialDecay(Vector2 a, Vector2 b, float decay, float deltaTime) =>
+				new(ExponentialDecay(a.x, b.x, decay, deltaTime), ExponentialDecay(a.y, b.y, decay, deltaTime));
 
 		#endregion
 
 
 		#region Publics - Performance
 
-			public static float Framerate(int frames, float time) => (frames / time);
-			public static float SceneLoadPercentage(AsyncOperation sceneLoadOperation) => Mathf.Clamp01(sceneLoadOperation.progress / 0.9f);
+			public static float Framerate(int frames, float time) =>
+				(frames / time);
+
+			public static float SceneLoadPercentage(AsyncOperation sceneLoadOperation) =>
+				Mathf.Clamp01(sceneLoadOperation.progress / 0.9f);
 
 		#endregion
 
 
 		#region Publics - Audio
 
-			public static float Linear2DbAudioVolume(float percentage) => (Mathf.Log10(Mathf.Clamp(percentage, 0.0001f, 10f)) * 20f);
-			public static float Db2LinearAudioVolume(float decibels) => Mathf.Pow(10f, (Mathf.Clamp(decibels, -80f, 20f) / 20f));
+			public static float Linear2DbAudioVolume(float percentage) =>
+				(Mathf.Log10(Mathf.Clamp(percentage, 0.0001f, 10f)) * 20f);
+
+			public static float Db2LinearAudioVolume(float decibels) =>
+				Mathf.Pow(10f, (Mathf.Clamp(decibels, -80f, 20f) / 20f));
 
 		#endregion
 
