@@ -7,7 +7,7 @@ namespace DragonResonance.Miscellany
 	{
 		#region Publics
 
-			public static string WithOS(this string versionString) => $"{versionString}-{AppOS}";
+			public static string WithOS(this string versionString) => (AppPlatform != null) ? $"{versionString}-{AppOS}" : versionString;
 			public static string WithPlatform(this string versionString) => (AppPlatform != null) ? $"{versionString}-{AppPlatform}" : versionString;
 			public static string WithVariant(this string versionString) => $"{versionString}-{AppVariant}";
 
@@ -22,6 +22,8 @@ namespace DragonResonance.Miscellany
 				public static string AppOS => "Linux";
 			#elif UNITY_STANDALONE_OSX
 				public static string AppOS => "macOS";
+			#else
+				public static string AppOS => null;
 			#endif
 
 			#if STEAMWORKS_INTEGRATION

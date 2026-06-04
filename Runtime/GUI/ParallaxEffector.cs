@@ -76,6 +76,7 @@ namespace DragonResonance.GUI
 			[Serializable]
 			public class ParallaxLayer
 			{
+				public string Name = null;
 				public bool Active = true;
 				public RectTransform Rect = null;
 				[Min(0f)] public float Speed = 2f;
