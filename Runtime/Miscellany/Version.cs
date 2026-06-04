@@ -7,7 +7,7 @@ namespace DragonResonance.Miscellany
 	{
 		#region Publics
 
-			public static string WithOS(this string versionString) => (AppPlatform != null) ? $"{versionString}-{AppOS}" : versionString;
+			public static string WithOS(this string versionString) => (AppOS != null) ? $"{versionString}-{AppOS}" : versionString;
 			public static string WithPlatform(this string versionString) => (AppPlatform != null) ? $"{versionString}-{AppPlatform}" : versionString;
 			public static string WithVariant(this string versionString) => $"{versionString}-{AppVariant}";
 
