@@ -13,13 +13,13 @@ using Version = DragonResonance.Miscellany.Version;
 
 namespace DragonResonance.Editor.Building
 {
-	public class BuildPropertiesStamper : IPreprocessBuildWithReport
+	public class BuildPropertiesStamper : IPostprocessBuildWithReport
 	{
 		private const string OUTPUT_FILEPATH     = "./build.properties";
 
 		private const string APP_NAME_KEY        = "application_name";
 		private const string APP_VERSION_KEY     = "application_version";
-		private const string APP_FULLVERSION_KEY = "application_fullversion";
+		private const string BUILD_TARGET_KEY    = "build_target";
 		private const string BUILD_DATETIME_KEY  = "build_datetime";
 		private const string BUILD_TIMESTAMP_KEY = "build_timestamp";
 		private const string COMPANY_NAME_KEY    = "company_name";
@@ -29,12 +29,7 @@ namespace DragonResonance.Editor.Building
 
 		#region Events
 
-			public void OnPreprocessBuild(BuildReport report)
-			{
-				string buildDir = Path.GetDirectoryName(report.summary.outputPath) ?? ".";
-				string stampPath = Path.Combine(buildDir, OUTPUT_FILEPATH);
-				StampBuildingData(stampPath);
-			}
+			public void OnPostprocessBuild(BuildReport report) => StampBuildingData(report);
 
 		#endregion
 
@@ -44,18 +39,18 @@ namespace DragonResonance.Editor.Building
 			public static string GetFormattedTimestampDatetime() => $"{DateTimeOffset.UtcNow:yyMMddHHmmss}";
 			public static string GetFormattedLine(string key, string value) => $"{key}={value}";
 
-
-			[MenuItem("Tools/Dragon Resonance/Building/Stamp Build Properties")]
-			public static void StampBuildingData() => StampBuildingData(OUTPUT_FILEPATH);
-			public static void StampBuildingData(string filePath)
+			public static void StampBuildingData(BuildReport report)
 			{
-				Log.Info($"Stamping data to {filePath}...");
+				string buildDirectory = Path.GetDirectoryName(report.summary.outputPath) ?? ".";
+				string outputPath = Path.Combine(buildDirectory, OUTPUT_FILEPATH);
+
+				Log.Info($"Stamping data to {outputPath}...");
 				{
-					Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-					File.WriteAllLines(filePath, new[] {
+					Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
+					File.WriteAllLines(outputPath, new[] {
 						GetFormattedLine(APP_NAME_KEY, Application.productName),
 						GetFormattedLine(APP_VERSION_KEY, Version.AppVersionLower),
-						GetFormattedLine(APP_FULLVERSION_KEY, Version.FullVersionLower),
+						GetFormattedLine(BUILD_TARGET_KEY, report.summary.platform.ToString()),
 						GetFormattedLine(BUILD_DATETIME_KEY, $"{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}"),
 						GetFormattedLine(BUILD_TIMESTAMP_KEY, GetFormattedTimestampDatetime()),
 						GetFormattedLine(COMPANY_NAME_KEY, Application.companyName),
