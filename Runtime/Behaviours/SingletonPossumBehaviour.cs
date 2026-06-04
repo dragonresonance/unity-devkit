@@ -5,7 +5,7 @@ using UnityEngine;
 namespace DragonResonance.Behaviours
 {
 	[DisallowMultipleComponent]
-	public abstract class SingletonPossumBehaviour<T> : PossumBehaviour where T : Component
+	public abstract class SingletonPossumBehaviour<T> : PossumBehaviour where T : SingletonPossumBehaviour<T>
 	{
 		internal static T _instance = null;
 		public static event Action OnInstanced = null;
