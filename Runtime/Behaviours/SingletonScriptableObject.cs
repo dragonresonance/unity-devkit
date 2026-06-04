@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace DragonResonance.Behaviours
 {
-	public class SingletonScriptableObject<T> : ScriptableObject where T : ScriptableObject
+	public class SingletonScriptableObject<T> : ScriptableObject where T : SingletonScriptableObject<T>
 	{
 		internal static T _instance = null;
 

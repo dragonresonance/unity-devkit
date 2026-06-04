@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DragonResonance.Behaviours
 {
-	public abstract class PersistentSingletonPossumBehaviour<T> : SingletonPossumBehaviour<T> where T : Component
+	public abstract class PersistentSingletonPossumBehaviour<T> : SingletonPossumBehaviour<T> where T : PersistentSingletonPossumBehaviour<T>
 	{
 		#region Inheritables
 
