@@ -8,7 +8,7 @@ public sealed class HierarchySeparator : PossumBehaviour
 {
 	[SerializeField] private Color _backgroundColor = new Color32(50, 50, 50, byte.MaxValue);
 	[SerializeField] [Range(0f, 1f)] private float _textVisibility = 0.6f;
-	[SerializeField] [Range(0f, 1f)] private float _accentVisibility = 0.2f;
+	[SerializeField] [Range(0f, 1f)] private float _accentVisibility = 0.3f;
 
 
 	#region Events
