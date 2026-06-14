@@ -23,11 +23,6 @@ namespace DragonResonance.GUI
 
 		#region Events
 
-			#if UNITY_EDITOR
-			void OnEnable() => UnityEditor.EditorApplication.update += Update;
-			void OnDisable() => UnityEditor.EditorApplication.update -= Update;
-			#endif
-
 			private void Update() => RefreshSprite();
 
 		#endregion
