@@ -1,35 +1,58 @@
 #if UNITY_EDITOR
 
 
+using DragonResonance.Serializables;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 
-namespace DragonResonance.Serializables
+namespace DragonResonance.Editor.Serializables
 {
 	[CustomPropertyDrawer(typeof(SerializableKeyValuePair<,>))]
-	public class SerializableKeyValuePairDrawer : PropertyDrawer
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,>))]
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,,>))]
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,,,>))]
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,,,,>))]
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,,,,,>))]
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,,,,,,>))]
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,,,,,,,>))]
+	[CustomPropertyDrawer(typeof(SerializableItemGroup<,,,,,,,,>))]
+	public class SerializableFieldGroupDrawer : PropertyDrawer
 	{
+		private const float SPACING = 4f;
+
+
+		private static readonly string[] FieldNames = {
+			"Key", "Value",
+			"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth",
+		};
+
+
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			{
-				SerializedProperty keyProperty = property.FindPropertyRelative(nameof(SerializableKeyValuePair<object, object>.Key));
-				SerializedProperty valueProperty = property.FindPropertyRelative(nameof(SerializableKeyValuePair<object, object>.Value));
-
 				position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-				float halfWidth = position.width / 2f;
-				Rect keyPropertyRect = new(position.x, position.y, halfWidth - 2, EditorGUIUtility.singleLineHeight);
-				Rect valuePropertyRect = new(position.x + halfWidth + 2, position.y, halfWidth - 2, EditorGUIUtility.singleLineHeight);
+				List<SerializedProperty> fields = GetFields(property);
+				float fieldWidth = (position.width - SPACING * (fields.Count - 1)) / fields.Count;
 
-				EditorGUI.PropertyField(keyPropertyRect, keyProperty, GUIContent.none);
-				EditorGUI.PropertyField(valuePropertyRect, valueProperty, GUIContent.none);
+				for (int fieldIndex = 0; fieldIndex < fields.Count; fieldIndex++) {
+					float positionX = position.x + (fieldIndex * (fieldWidth + SPACING));
+					Rect rect = new(positionX, position.y, fieldWidth, EditorGUIUtility.singleLineHeight);
+					EditorGUI.PropertyField(rect, fields[fieldIndex], GUIContent.none);
+				}
 			}
 			EditorGUI.EndProperty();
 		}
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) => EditorGUIUtility.singleLineHeight;
+
+
+		private List<SerializedProperty> GetFields(SerializedProperty property) =>
+			FieldNames.Select(property.FindPropertyRelative).Where(prop => (prop != null)).ToList();
 	}
 }
 
