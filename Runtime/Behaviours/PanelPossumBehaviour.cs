@@ -1,13 +1,19 @@
+using DragonResonance.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 
 namespace DragonResonance.Behaviours
 {
-	public abstract class PanelPossumBehaviour : PossumBehaviour
+	public abstract class PanelPossumBehaviour<T> : PossumBehaviour where T : PanelPossumBehaviour<T>
 	{
+		internal static readonly Queue<PanelPossumBehaviour<T>> _instances = new();
+		public static event Action<PanelPossumBehaviour<T>> OnInstanced = null;
+
+
 		/*
 		[SerializeField] private bool _visible = true;
 		[SerializeField] private bool _visibleOnStart = true;
@@ -17,21 +23,43 @@ namespace DragonResonance.Behaviours
 		private CanvasGroup _canvasGroup_internal = null;	// Caching only, use the property instead
 
 		protected event Action<bool> OnVisibilityChange;
+		*/
 
 
 		#region Events
 
+			protected void Awake()
+			{
+				AssessInstance();
+				LateAwake();
+			}
+
+			/*
 			protected void Start()
 			{
 				if (_visibleOnStart)
 					Show();
 			}
+			*/
 
 		#endregion
 
 
 		#region Publics
 
+			public static bool TryGetInstance(out PanelPossumBehaviour<T> instance) => ((instance = GetInstance()) != null);
+
+			public static PanelPossumBehaviour<T> GetInstance()
+			{
+				if ((_instances.IsEmpty()) && (FindAnyObjectByType(typeof(T)) is PanelPossumBehaviour<T> instance))
+					instance.AssessInstance();
+				else
+					instance = null;
+
+				return instance;
+			}
+
+			/*
 			public static T Find<T>() where T : BasicPanel => FindAnyObjectByType<T>();
 			public static void Toggle<T>() where T : BasicPanel => Find<T>().Toggle();
 			public static void Show<T>() where T : BasicPanel => Find<T>().Show();
@@ -49,10 +77,33 @@ namespace DragonResonance.Behaviours
 					this.CanvasGroup.interactable = this.CanvasGroup.blocksRaycasts = _visible;
 				OnVisibilityChange?.Invoke(_visible);
 			}
+			*/
 
 		#endregion
 
 
+		#region Inheritables
+
+			protected virtual void LateAwake() { }
+
+			protected virtual void InvokeInstantiationEvent() => OnInstanced?.Invoke(this);
+
+			protected virtual void AssessInstance()
+			{
+				if (!this.Instanced) {
+					_instances.Enqueue(this);
+					InvokeInstantiationEvent();
+				}
+				else {
+					Error("This instance is already on the instances list. Destroying...");
+					Destroy(this);
+				}
+			}
+
+		#endregion
+
+
+		/*
 		#region Privates
 
 			protected virtual Action<CanvasGroup, bool> CanvasGroupVisibilityChangeAction => (canvasGroup, visible) => { canvasGroup.alpha = visible.AsInt(); };
@@ -81,6 +132,16 @@ namespace DragonResonance.Behaviours
 
 		#endif
 		*/
+
+
+		#region Properties
+
+			public IEnumerable<PanelPossumBehaviour<T>> Instances => _instances;
+			public bool Instanced => _instances.Contains(this);
+			public static PanelPossumBehaviour<T> Current => _instances.Peek();
+			public static PanelPossumBehaviour<T> Instance => GetInstance();
+
+		#endregion
 	}
 }
 
