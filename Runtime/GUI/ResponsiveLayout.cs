@@ -9,9 +9,9 @@ using UnityEngine;
 
 namespace DragonResonance.GUI
 {
-	[AddComponentMenu("Layout/Limitable Expanded Layout")]
+	[AddComponentMenu("Layout/Responsive Layout")]
 	[ExecuteAlways]
-	public class LimitableExpandedLayout : UIBehaviour, ILayoutSelfController
+	public class ResponsiveLayout : UIBehaviour, ILayoutSelfController
 	{
 		[Header("Horizontal")]
 		[SerializeField] private bool _handleMaxWidth = false;
@@ -112,7 +112,7 @@ namespace DragonResonance.GUI
 				this.rectTransform.anchoredPosition = new Vector2(this.rectTransform.anchoredPosition.x, anchoredPositionY);
 				//this.rectTransform.sizeDelta = new Vector2(currentSizeDelta.x, (currentSizeDelta.y - heightExcess).UpperClamp(marginsHeight));
 				this.rectTransform.sizeDelta = new Vector2(currentSizeDelta.x, 0f);
-				this.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, this.rectTransform.rect.height.UpperClamp(_maxHeight));
+				this.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, this.rectTransform.rect.height.UpperClamp(_maxHeight));
 			}
 
 
