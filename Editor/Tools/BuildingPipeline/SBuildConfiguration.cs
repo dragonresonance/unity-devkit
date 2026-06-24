@@ -8,15 +8,16 @@ using UnityEditor;
 namespace DragonResonance.Editor.Tools
 {
 	[Serializable]
-	public struct SBuildConfiguration
+	public class SBuildConfiguration
 	{
 		public string alias;
+		public string folderName;
+		public string binaryFilename;
 		public bool included;
 
 		public BuildTarget target;
 		public StandaloneBuildSubtarget subtarget;
 		public BuildOptions options;
-		public string locationPathName;
 		public string[] extraScriptingDefines;
 	}
 }
