@@ -3,11 +3,10 @@
 
 using DragonResonance.Logging;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
-
 
 
 namespace DragonResonance.Editor.Tools
@@ -16,99 +15,61 @@ namespace DragonResonance.Editor.Tools
 	public class PipelineBuildingTool : ScriptableObject
 	{
 		[Header("Configuration")]
+		[SerializeField] private string _buildsLocation = "./Builds";
 		[SerializeField] private SBuildConfiguration[] _buildConfigurations = { };
-
-
 
 
 		#region Publics
 
-
-			[ContextMenu(nameof(BuildPipeline))]
-			public void BuildPipeline()
+			[ContextMenu(nameof(Build))]
+			public void Build()
 			{
-				HLogger.LogEmphasis($"Building pipeline ...", typeof(PipelineBuildingTool));
+				Log.Emphasis($"Building pipeline ...");
 				{
 					foreach (SBuildConfiguration configuration in _buildConfigurations)
 						if (configuration.included)
 							Build(configuration);
 				}
-				HLogger.LogEmphasis("Pipeline finished!", typeof(PipelineBuildingTool));
+				Log.Emphasis("Pipeline finished!");
 			}
 
 
-			public void Build(int index)
-			{
-				Build(_buildConfigurations[index]);
-			}
-
+			public void Build(int index) => Build(_buildConfigurations[index]);
 			public void Build(SBuildConfiguration configuration)
 			{
-				HLogger.Log($"Building {configuration.alias} ...", typeof(PipelineBuildingTool));
+				Log.Info($"Building {configuration.alias} ...");
 				{
-					UnityEditor.BuildPipeline.BuildPlayer(new BuildPlayerOptions() {
+					BuildPipeline.BuildPlayer(new BuildPlayerOptions() {
 						scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path).ToArray(),
 						target = configuration.target,
 						subtarget = (int)configuration.subtarget,
 						options = configuration.options,
-						locationPathName = configuration.locationPathName,
+						locationPathName = GetBuildPath(configuration.folderName, configuration.binaryFilename),
 						extraScriptingDefines = configuration.extraScriptingDefines,
 					});
 				}
-				HLogger.Log("Building finished!", typeof(PipelineBuildingTool));
+				Log.Info("Building finished!");
 			}
 
 
+			public string GetBuildPath(SBuildConfiguration configuration) =>
+				GetBuildPath(configuration.folderName, configuration.binaryFilename);
+			public string GetBuildPath(string folderName, string binaryFilename) =>
+				Path.Combine(Path.GetRelativePath(".", _buildsLocation), folderName, binaryFilename);
+
 		#endregion
-
-
 
 
 		#region Properties
 
-
 			public IEnumerable<SBuildConfiguration> BuildConfigurations => _buildConfigurations;
 
-
 		#endregion
-	}
-
-
-
-
-	[CustomEditor(typeof(PipelineBuildingTool))]
-	public class PipelineBuildingToolEditor : UnityEditor.Editor
-	{
-		public override void OnInspectorGUI()
-		{
-			base.OnInspectorGUI();
-			PipelineBuildingTool pipelineBuildingTool = (PipelineBuildingTool)base.target;
-
-
-			EditorGUILayout.LabelField("Pipeline Summary", EditorStyles.boldLabel);
-			int order = 0;
-			foreach (SBuildConfiguration configuration in pipelineBuildingTool.BuildConfigurations) {
-				if (configuration.included) {
-					EditorGUILayout.BeginHorizontal();
-					{
-						EditorGUILayout.LabelField($"{++order}. {configuration.alias}");
-						if (GUILayout.Button("Build"))
-							pipelineBuildingTool.Build(configuration);
-					}
-					EditorGUILayout.EndHorizontal();
-				}
-			}
-
-			if (GUILayout.Button("Execute Building Pipeline"))
-				pipelineBuildingTool.BuildPipeline();
-		}
 	}
 }
 
 
 #endif
-
-
 
 
 /*       ________________________________________________________________       */
