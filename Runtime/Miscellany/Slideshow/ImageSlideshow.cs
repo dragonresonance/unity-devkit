@@ -1,71 +1,20 @@
-using DragonResonance.Behaviours;
 using DragonResonance.Extensions;
+using UnityEngine.UI;
 using UnityEngine;
 
 
-public class Slideshow : PossumBehaviour
+namespace DragonResonance.Miscellany
 {
-	[SerializeField] private int _slideIndex = 0;
-	[SerializeField] private bool _cyclical = true;
-	[SerializeField] private GameObject[] _slides = { };
+	public class ImageSlideshow : Slideshow<Sprite>
+	{
+		[SerializeField] protected Image _image = null;
 
-
-	#region Events
-
-		private void OnValidate() => GoTo(_slideIndex);
-
-	#endregion
-
-
-	#region Publics
-
-		public void Previous()
+		protected override void UpdateSlide(int currentIndex)
 		{
-			if (_cyclical)
-				GoTo(_slideIndex.PreviousCyclic(_slides.Length));
-			else
-				GoTo((_slideIndex - 1).LowerClamp(this.FirstSlideIndex));
+			if (currentIndex.IsNegative()) return;
+			_image.sprite = base._slides[currentIndex];
 		}
-
-		public void Next()
-		{
-			if (_cyclical)
-				GoTo(_slideIndex.NextCyclic(_slides.Length));
-			else
-				GoTo((_slideIndex + 1).UpperClamp(this.LastSlideIndex));
-		}
-
-
-		public void GoTo(int index)
-		{
-			_slideIndex = SanitizedIndex(index);
-			UpdateSlide();
-		}
-
-	#endregion
-
-
-	#region Privates
-
-		private int SanitizedIndex(int index) => _slides.IsEmpty() ? -1 : index.Clamp(0, (_slides.Length - 1));
-
-		private void UpdateSlide()
-		{
-			for (int index = 0; index < _slides.Length; index++)
-				_slides[index].SetActive(index == _slideIndex);
-		}
-
-	#endregion
-
-
-	#region Properties
-
-		public int FirstSlideIndex => 0;
-		public int LastSlideIndex => _slides.Length - 1;
-		public bool IsFirstSlide => (_slideIndex == this.FirstSlideIndex);
-		public bool IsLastSlide => (_slideIndex == this.LastSlideIndex);
-
-	#endregion
+	}
 }
 
 
