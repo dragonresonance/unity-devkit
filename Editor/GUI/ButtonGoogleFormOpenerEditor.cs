@@ -1,11 +1,12 @@
 #if UNITY_EDITOR
 
 
+using DragonResonance.GUI;
 using UnityEditor;
 using UnityEngine;
 
 
-namespace DragonResonance.GUI
+namespace DragonResonance.Editor.GUI
 {
 	[CustomEditor(typeof(ButtonGoogleFormOpener), true)]
 	public class ButtonGoogleFormOpenerEditor : UnityEditor.Editor
