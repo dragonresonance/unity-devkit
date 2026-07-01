@@ -1,31 +1,43 @@
 #if UNITY_EDITOR
 
 
-using DragonResonance.GUI;
-using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 
-namespace DragonResonance.Editor.GUI
+namespace DragonResonance.GUI
 {
-	[UnityEditor.CustomEditor(typeof(SelectableAutoColoringTool), true)]
-	[UnityEditor.CanEditMultipleObjects]
-	public class ButtonAutoColoringToolEditor : UnityEditor.Editor
+	public static class BakeRectTransformScaleContext
 	{
-		public override void OnInspectorGUI()
+		[MenuItem("CONTEXT/RectTransform/Bake Scale into Size", validate = true)]
+		private static bool BakeScaleValidate(MenuCommand command)
 		{
-			base.OnInspectorGUI();
-			SelectableAutoColoringTool selectedColoringTool = (SelectableAutoColoringTool)base.target;
-			SelectableAutoColoringTool[] selectedColoringTools = base.targets.Cast<SelectableAutoColoringTool>().ToArray();
+			RectTransform rectTransform = (RectTransform)command.context;
+			return (rectTransform.localScale != Vector3.one);
+		}
 
-			UnityEditor.EditorGUI.BeginChangeCheck();
-			Color newColor = UnityEditor.EditorGUILayout.ColorField("Pick Color", selectedColoringTool.CachedBaseColor);
-			if (UnityEditor.EditorGUI.EndChangeCheck()) {
-				foreach (SelectableAutoColoringTool coloringTool in selectedColoringTools) {
-					UnityEditor.Undo.RecordObject(coloringTool, "Change Color");
-					coloringTool.ApplyColoring(newColor);
-				}
-			}
+
+		[MenuItem("CONTEXT/RectTransform/Bake Scale into Size")]
+		private static void BakeScale(MenuCommand command)
+		{
+			RectTransform rectTransform = (RectTransform)command.context;
+			Vector3 currentScale = rectTransform.localScale;
+
+			if (currentScale == Vector3.one)
+				return;
+
+			Undo.RecordObject(rectTransform, "Bake Scale into Size");
+
+			Vector2 sizeDelta = rectTransform.sizeDelta;
+			sizeDelta = new Vector2(
+				sizeDelta.x * currentScale.x,
+				sizeDelta.y * currentScale.y
+			);
+			rectTransform.sizeDelta = sizeDelta;
+			rectTransform.localScale = Vector3.one;
+
+			EditorUtility.SetDirty(rectTransform);
+			Debug.Log($"Baked {rectTransform.name} scale {currentScale} into sizeDelta {sizeDelta}");
 		}
 	}
 }
